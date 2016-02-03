@@ -24,7 +24,7 @@ public class ProcessSymbol extends Symbols {
 		this.getChildren().add(square);
 		symbolText = new Text(super.getTextFromDialog());
 		symbolText.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
-			symbolText.setText(super.getTextFromDialog());
+			symbolText.setText(super.changeText(symbolText.getText()));
 			updateSize();
 		});
 		updateSize();

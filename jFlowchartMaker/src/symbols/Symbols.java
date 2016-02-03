@@ -26,6 +26,17 @@ public abstract class Symbols extends StackPane {
 		return text;
 	}
 	
+	public String changeText(String currText) {
+		TextInputDialog textInput = new TextInputDialog(currText);
+		textInput.setTitle("Text");
+		textInput.setHeaderText("Text on flowchart element");
+		Optional<String> result = textInput.showAndWait();
+		if (result.isPresent()){
+			currText = result.get();
+		}
+		return currText;
+	}
+	
 	// GETTERS & SETTERS
 	
 	public boolean isSelected() {
