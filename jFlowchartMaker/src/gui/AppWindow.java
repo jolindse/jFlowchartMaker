@@ -5,6 +5,7 @@ import interfaces.iElements;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import symbols.ProcessSymbol;
@@ -39,9 +40,10 @@ public class AppWindow implements iElements {
 	public void addElement(String type) {
 		switch(type) {
 		case "process":
-			ProcessSymbol currSymbol = new ProcessSymbol(); 
+			ProcessSymbol currSymbol = new ProcessSymbol(this); 
 			controller.addElement(currSymbol);
-			contentpane.addElement(currSymbol);
+			contentpane.addElement(controller.getElements());
+			System.out.println(currSymbol);
 			System.out.println("Process added.");
 			break;
 		case "decision":
@@ -59,6 +61,16 @@ public class AppWindow implements iElements {
 	public void removeElement(Symbols currSymbol) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void moveElement(MouseEvent e) {
+		if(e.isPrimaryButtonDown()){
+		Symbols currSymbol = (Symbols)e.getSource();
+		System.out.println(currSymbol);
+		currSymbol.setLayoutX(e.getSceneX());
+		currSymbol.setLayoutY(e.getSceneY());
+		}
 	}
 
 

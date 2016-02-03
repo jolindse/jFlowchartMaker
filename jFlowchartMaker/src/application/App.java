@@ -42,6 +42,10 @@ public class App extends Application {
 	public void removeElement(Symbols currSymbol) {
 		elementsAdded.remove(currSymbol);
 	}
+	
+	public ObservableList<Symbols> getElements() {
+		return elementsAdded;
+	}
 
 	// METHODS FOR CHOSEN ELEMENTS
 

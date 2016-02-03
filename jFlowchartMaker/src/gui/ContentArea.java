@@ -1,6 +1,7 @@
 package gui;
 
 import interfaces.iElements;
+import javafx.collections.ObservableList;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import symbols.Symbols;
@@ -12,12 +13,10 @@ public class ContentArea extends AnchorPane {
 	
 	public ContentArea (iElements ev) {
 		listener = ev;
-		testtext = new Text("ContensArea");
-		this.getChildren().add(testtext);
 	}
 
-	public void addElement(Symbols currSymbol) {
-		this.getChildren().add(currSymbol);
+	public void addElement(ObservableList<Symbols> list) {
+		this.getChildren().addAll(list);
 		
 	}
 	
