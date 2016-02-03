@@ -1,11 +1,5 @@
 package application;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Observer;
-
-import com.sun.glass.ui.View;
-
 import gui.AppWindow;
 import javafx.application.Application;
 import javafx.collections.FXCollections;

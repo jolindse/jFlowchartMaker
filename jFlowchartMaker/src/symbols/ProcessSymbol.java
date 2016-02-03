@@ -17,13 +17,11 @@ public class ProcessSymbol extends Symbols {
 	public ProcessSymbol(iElements listener) {
 		this.listener = listener;
 
-		/*
-		 * double minSizeW = 100; double minSizeH = 50;
-		 */
 		square = new Rectangle(100, 50);
 		square.setFill(Color.WHITE);
 		square.setStroke(Color.BLACK);
 		square.setStrokeWidth(2);
+		this.getChildren().add(square);
 		symbolText = new Text(super.getTextFromDialog());
 		symbolText.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
 			symbolText.setText(super.getTextFromDialog());
@@ -34,20 +32,11 @@ public class ProcessSymbol extends Symbols {
 		this.addEventHandler(MouseEvent.ANY, (e) -> {
 
 			if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
-				System.out.println("Mouse clicked subclass!"); // TEST
 				listener.moveElement(e);
 			}
 		});
-
-		/*
-		 * 
-		 * this.addEventHandler(MouseEvent.ANY, (e) -> {
-		 * if(e.equals(MouseEvent.MOUSE_DRAGGED)){ System.out.println(
-		 * "Mouse dragged!"); // TEST double x = this.getTranslateX() +
-		 * e.getSceneX(); double y = this.getTranslateY() + e.getSceneY();
-		 * square.setX(x); square.setY(y); } });
-		 */
-		this.getChildren().addAll(square, symbolText);
+		
+		this.getChildren().add(symbolText);
 	}
 
 	private void updateSize() {
