@@ -8,8 +8,10 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import symbols.DecisionSymbol;
 import symbols.ProcessSymbol;
 import symbols.Symbols;
+import symbols.TerminatorSymbol;
 
 public class AppWindow implements iElements {
 	private BorderPane root;
@@ -38,23 +40,22 @@ public class AppWindow implements iElements {
 
 	@Override
 	public void addElement(String type) {
+		Symbols currSymbol = null;
 		switch(type) {
 		case "process":
-			ProcessSymbol currSymbol = new ProcessSymbol(this); 
-			controller.addElement(currSymbol);
-			contentpane.addElement(controller.getElements());
-			System.out.println(currSymbol);
-			System.out.println("Process added.");
+			currSymbol = new ProcessSymbol(this); 
 			break;
 		case "decision":
-			System.out.println("Decision added.");
+			currSymbol = new DecisionSymbol(this);
 			break;
 		case "terminator":
-			System.out.println("Terminator added.");
+			currSymbol = new TerminatorSymbol(this);
 			break;
-		
 		}
-		
+		if (currSymbol != null){
+		controller.addElement(currSymbol);
+		}
+		contentpane.addElement(controller.getElements());
 	}
 
 	@Override
@@ -67,10 +68,18 @@ public class AppWindow implements iElements {
 	public void moveElement(MouseEvent e) {
 		if(e.isPrimaryButtonDown()){
 		Symbols currSymbol = (Symbols)e.getSource();
-		System.out.println(currSymbol);
-		currSymbol.setLayoutX(e.getSceneX());
-		currSymbol.setLayoutY(e.getSceneY());
+		double x = e.getSceneX()+currSymbol.getTranslateX()-(currSymbol.getWidth()/2);
+		double y = (e.getSceneY()+currSymbol.getTranslateY()-(controllpane.getHeight()+(currSymbol.getHeight()/2)));
+		currSymbol.setLayoutX(x);
+		currSymbol.setLayoutY(y);
 		}
+	}
+
+	@Override
+	public void selectElement(MouseEvent e) {
+		Symbols currSymbol = (Symbols)e.getSource();
+		controller.setSelected(currSymbol);
+		
 	}
 
 

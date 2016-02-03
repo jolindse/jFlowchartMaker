@@ -16,6 +16,7 @@ public class ContentArea extends AnchorPane {
 	}
 
 	public void addElement(ObservableList<Symbols> list) {
+		this.getChildren().clear();
 		this.getChildren().addAll(list);
 		
 	}

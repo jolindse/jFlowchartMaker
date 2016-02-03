@@ -50,7 +50,7 @@ public class App extends Application {
 	public void setSelected(Symbols currSymbol) {
 
 		int numSelected = elementsSelected.length;
-
+		
 		switch (numSelected) {
 		case 0:
 			elementsSelected[0] = currSymbol;

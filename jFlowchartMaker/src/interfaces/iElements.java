@@ -9,4 +9,6 @@ public interface iElements {
 	public void removeElement(Symbols currSymbol);
 	public void moveElement(MouseEvent e);
 	
+	public void selectElement(MouseEvent e);
+	
 }

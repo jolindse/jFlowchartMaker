@@ -4,7 +4,9 @@ import java.util.Optional;
 
 import interfaces.iElements;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 
 public abstract class Symbols extends StackPane {
 
@@ -40,5 +42,16 @@ public abstract class Symbols extends StackPane {
 	}
 	
 
-
+	// MODIFIERS
+	
+	public void setSelected() {
+		setSelected(true);
+		this.setEffect(new DropShadow(5, Color.BLACK));
+	}
+	
+	public void setDeselected() {
+		setSelected(false);
+		this.setEffect(null);
+	}
+	
 }
