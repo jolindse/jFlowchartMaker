@@ -11,6 +11,7 @@ public class App extends Application {
 
 	private AppWindow view;
 	private ObservableList<Symbols> elementsAdded;
+	private boolean selected = false;
 	private Symbols[] elementsSelected;
 
 	@Override
@@ -45,28 +46,21 @@ public class App extends Application {
 
 	public void clearSelection() {
 		elementsSelected = new Symbols[2];
+		selected = false;
 	}
 
-	public void setSelected(Symbols currSymbol) {
-
-		int numSelected = elementsSelected.length;
-		
-		switch (numSelected) {
-		case 0:
-			elementsSelected[0] = currSymbol;
-			break;
-		case 1:
-			elementsSelected[1] = currSymbol;
-			break;
-		default:
-			clearSelection();
-			elementsSelected[0] = currSymbol;
-			break;
-		}
+	public void setSelected(Symbols startSymbol, Symbols endSymbol) {
+		elementsSelected[0] = startSymbol;
+		elementsSelected[1] = endSymbol;
+		selected = true;
 	}
 
 	public Symbols[] getSelected() {
 		return elementsSelected;
+	}
+	
+	public boolean isSelected() {
+		return selected;
 	}
 	
 	// METHODS TO MANIPULATE VIEW

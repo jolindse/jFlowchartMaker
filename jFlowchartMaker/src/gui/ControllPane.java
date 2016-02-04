@@ -6,12 +6,14 @@ package gui;
 
 import interfaces.iElements;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 public class ControllPane extends GridPane {
@@ -19,6 +21,8 @@ public class ControllPane extends GridPane {
 	private Rectangle process, decision;
 	private Ellipse terminator;
 	private Effect effect;
+	private Button arrow;
+	private boolean isSelected = false;
 	
 	public ControllPane(iElements ev) {
 		listener = ev;
@@ -27,7 +31,9 @@ public class ControllPane extends GridPane {
 		this.setHgap(10);
 	
 		this.addEventHandler(MouseEvent.MOUSE_CLICKED, (e)->{
-			handleClick(false, null);
+			listener.deselectSymbol();
+			clearSelection();
+			isSelected = false;
 		});
 		
 		effect = null;
@@ -38,7 +44,7 @@ public class ControllPane extends GridPane {
 		process.setStrokeWidth(3);
 		process.setEffect(effect);
 		process.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) ->{
-			handleClick(true,"process");
+			setSelected("process");
 			process.setEffect(new DropShadow());
 			e.consume();
 		});
@@ -52,7 +58,7 @@ public class ControllPane extends GridPane {
 		decision.setStrokeWidth(3);
 		decision.setEffect(effect);
 		decision.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
-			handleClick(true,"decision");
+			setSelected("decision");
 			decision.setEffect(new DropShadow());
 			e.consume();
 		});
@@ -64,23 +70,32 @@ public class ControllPane extends GridPane {
 		terminator.setStrokeWidth(3);
 		terminator.setEffect(effect);
 		terminator.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
-			handleClick(true,"terminator");
+			setSelected("terminator");
 			terminator.setEffect(new DropShadow());
 			e.consume();
 		});
 		this.add(terminator, 2, 0);
 		
+		arrow = new Button("Arrow");
+		arrow.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) ->{
+			listener.addArrow();
+			e.consume();
+		});
+		this.add(arrow,3,0);
 	}
 	
-	private void handleClick(boolean symbol, String type) {
-		if (symbol) {
-			listener.selectSymbol(type);
-		} else {
+	private void setSelected(String type) {
+		clearSelection();
+		listener.selectSymbol(type);
+		isSelected = true;
+	}
+	
+	public void clearSelection() {
 			listener.deselectSymbol();
 			process.setEffect(effect);
 			decision.setEffect(effect);
 			terminator.setEffect(effect);
-		}
+			isSelected = false;
 	}
 	
 }

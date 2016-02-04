@@ -9,9 +9,9 @@ import javafx.scene.text.Text;
 public class TerminatorSymbol extends Symbols {
 	private Ellipse elipse;
 
-	public TerminatorSymbol (iElements listener, double x, double y) {
-		super(listener);
-		elipse = new Ellipse(x,y,40,20);
+	public TerminatorSymbol (iElements listener) {
+		super(listener,true);
+		elipse = new Ellipse(40,20);
 		elipse.setFill(Color.WHITE);
 		elipse.setStroke(Color.BLACK);
 		elipse.setStrokeWidth(2);

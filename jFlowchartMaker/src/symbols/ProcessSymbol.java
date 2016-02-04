@@ -12,10 +12,10 @@ public class ProcessSymbol extends Symbols {
 
 	private Rectangle square;
 
-	public ProcessSymbol(iElements listener,double x,double y) {
-		super(listener);
+	public ProcessSymbol(iElements listener) {
+		super(listener,true);
 
-		square = new Rectangle(x,y,100, 50);
+		square = new Rectangle(100, 50);
 		square.setFill(Color.WHITE);
 		square.setStroke(Color.BLACK);
 		square.setStrokeWidth(2);

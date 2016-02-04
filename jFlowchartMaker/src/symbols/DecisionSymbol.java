@@ -11,24 +11,15 @@ public class DecisionSymbol extends Symbols {
 
 	private Rectangle romb;
 
-	public DecisionSymbol(iElements listener,double x, double y) {
-		super(listener);
-		romb = new Rectangle(x,y,50,50);
+	public DecisionSymbol(iElements listener) {
+		super(listener,true);
+		romb = new Rectangle(50,50);
 		romb.setFill(Color.WHITE);
 		romb.setStroke(Color.BLACK);
 		romb.setStrokeWidth(2);
 		romb.setRotate(45);
 		this.getChildren().add(romb);
-		/*
-		symbolText = new Text(super.getTextFromDialog());
-		symbolText.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
-			symbolText.setText(super.changeText(symbolText.getText()));
-			updateSize();
-		});
-		*/
 		updateSize();
-
-		
 
 		this.getChildren().add(symbolText);
 	}
