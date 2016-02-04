@@ -11,35 +11,22 @@ import javafx.scene.text.Text;
 public class ProcessSymbol extends Symbols {
 
 	private Rectangle square;
-	private Text symbolText;
-	private iElements listener;
 
-	public ProcessSymbol(iElements listener) {
-		this.listener = listener;
+	public ProcessSymbol(iElements listener,double x,double y) {
+		super(listener);
 
-		square = new Rectangle(100, 50);
+		square = new Rectangle(x,y,100, 50);
 		square.setFill(Color.WHITE);
 		square.setStroke(Color.BLACK);
 		square.setStrokeWidth(2);
 		this.getChildren().add(square);
-		symbolText = new Text(super.getTextFromDialog());
-		symbolText.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
-			symbolText.setText(super.changeText(symbolText.getText()));
-			updateSize();
-		});
 		updateSize();
 
-		this.addEventHandler(MouseEvent.ANY, (e) -> {
-
-			if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
-				listener.moveElement(e);
-			}
-		});
 		
 		this.getChildren().add(symbolText);
 	}
 
-	private void updateSize() {
+	void updateSize() {
 		double width = symbolText.getLayoutBounds().getWidth() + 20;
 		double height = symbolText.getLayoutBounds().getHeight() + 20;
 		square.widthProperty().set(width);
