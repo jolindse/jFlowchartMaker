@@ -85,6 +85,13 @@ public class AppWindow implements iElements {
 
 			currSymbol.setTranslateX(x);
 			currSymbol.setTranslateY(y);
+			if (currSymbol.isConnected()) {
+				ArrowSymbol currConnection = currSymbol.getConnection();
+				Symbols start = currConnection.getConnectedSymbols()[0];
+				Symbols end = currConnection.getConnectedSymbols()[1];
+				Point2D[] anchors = start.getArrowAnchors(end);
+				currConnection.updateConnection(anchors[0],anchors[1]);
+			}
 		}
 	}
 	
@@ -136,12 +143,12 @@ public class AppWindow implements iElements {
 		Symbols end = elementsToConnect[1];
 		Point2D[] anchors = start.getArrowAnchors(end);
 		
-		ArrowSymbol arrow = new ArrowSymbol(this,anchors[0].getX(),anchors[0].getY(),anchors[1].getX(),anchors[1].getY());
-		arrow.setLayoutX(arrow.getStartX());
-		arrow.setLayoutY(arrow.getStartY());
+		ArrowSymbol arrow = new ArrowSymbol(this,anchors[0],anchors[1],start,end);
+		//arrow.setLayoutX(arrow.getStartX());
+		//arrow.setLayoutY(arrow.getStartY());
 		
-		start.setArrowed(arrow);
-		end.setArrowed(arrow);
+		start.setConnected(arrow);
+		end.setConnected(arrow);
 		
 		controller.addElement(arrow);
 		contentpane.addElement(controller.getElements());

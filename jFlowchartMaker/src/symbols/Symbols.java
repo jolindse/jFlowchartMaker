@@ -21,11 +21,11 @@ public abstract class Symbols extends StackPane {
 
 	protected iElements listener;
 	protected boolean selected = false;
-	protected boolean arrowed = false;
+	protected boolean connected = false;
 	protected boolean textOnStart;
-
+	protected ArrowSymbol connection = null;
+	
 	protected Text symbolText;
-	protected ArrowSymbol arrow;
 	
 	public Symbols(iElements listener, boolean textOnStart) {
 		this.listener = listener;
@@ -197,14 +197,23 @@ public abstract class Symbols extends StackPane {
 		return anchors;
 	}
 
-	public void setArrowed(ArrowSymbol arrow) {
-		this.arrow = arrow;
-		arrowed = true;
+	// METHODS TO HANDLE CONNECTION
+	
+	public void setConnected(ArrowSymbol arrow) {
+		connection = arrow;
+		connected = true;
 	}
 	
-	public void removeArrow() {
-		arrow = null;
-		arrowed = false;
+	public void removeConnected() {
+		connected = false;
+	}
+	
+	public boolean isConnected() {
+		return connected;
+	}
+	
+	public ArrowSymbol getConnection() {
+		return connection;
 	}
 	
 	// SELECTION METHODS
