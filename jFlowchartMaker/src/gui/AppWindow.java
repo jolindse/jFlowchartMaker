@@ -2,8 +2,7 @@ package gui;
 
 import application.App;
 import interfaces.iElements;
-import javafx.event.Event;
-import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -45,12 +44,10 @@ public class AppWindow implements iElements {
 
 	@Override
 	public void addElement(MouseEvent e) {
-		System.out.println("addElement symbolSelected: "+symbolSelected+" symbolType: "+symbolType); // TEST
 		if (symbolSelected) {
 			Symbols currSymbol = null;
 			double x = contentpane.getTranslateX()+e.getX();
 			double y = contentpane.getTranslateY()+e.getY();
-			System.out.println("X AND Y: "+x+" "+y); // TEST
 			switch (symbolType) {
 			case "process":
 				currSymbol = new ProcessSymbol(this);
@@ -103,7 +100,6 @@ public class AppWindow implements iElements {
 	public void addElementToSelections(Symbols currSymbol) {
 		if (elementSelected) {
 			controller.setSelected(selectedSymbol, currSymbol);
-			System.out.println("Elements added to selection: "+selectedSymbol+" "+currSymbol);
 		}
 		
 	}
@@ -119,7 +115,6 @@ public class AppWindow implements iElements {
 	
 	@Override
 	public void selectSymbol(String type) {
-		System.out.println("Symbol selected: "+type); // TEST
 		symbolType = type;
 		symbolSelected = true;
 
@@ -127,7 +122,6 @@ public class AppWindow implements iElements {
 
 	@Override
 	public void deselectSymbol() {
-		System.out.println("Symbols deselected");
 		symbolType = null;
 		symbolSelected = false;
 
@@ -137,17 +131,17 @@ public class AppWindow implements iElements {
 	public void addArrow() {
 		
 		if (controller.isSelected()){
-		System.out.println("Add an arrow"); // TEST
 		Symbols[] elementsToConnect = controller.getSelected();
 		Symbols start = elementsToConnect[0];
 		Symbols end = elementsToConnect[1];
-		double[] anchors = start.getArrowAnchors(end);
+		Point2D[] anchors = start.getArrowAnchors(end);
 		
-		Symbols arrow = new ArrowSymbol(this,anchors[0],anchors[1],anchors[2],anchors[3]);
+		ArrowSymbol arrow = new ArrowSymbol(this,anchors[0].getX(),anchors[0].getY(),anchors[1].getX(),anchors[1].getY());
+		arrow.setLayoutX(arrow.getStartX());
+		arrow.setLayoutY(arrow.getStartY());
 		
-		arrow.setTranslateX(anchors[0]);
-		arrow.setTranslateY(anchors[1]);
-		
+		start.setArrowed(arrow);
+		end.setArrowed(arrow);
 		
 		controller.addElement(arrow);
 		contentpane.addElement(controller.getElements());

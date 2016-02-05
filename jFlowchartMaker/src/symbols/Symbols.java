@@ -5,10 +5,14 @@ import java.util.List;
 import java.util.Optional;
 
 import interfaces.iElements;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -21,7 +25,8 @@ public abstract class Symbols extends StackPane {
 	protected boolean textOnStart;
 
 	protected Text symbolText;
-
+	protected ArrowSymbol arrow;
+	
 	public Symbols(iElements listener, boolean textOnStart) {
 		this.listener = listener;
 		if (textOnStart) {
@@ -30,7 +35,7 @@ public abstract class Symbols extends StackPane {
 		addHandlers();
 	}
 
-	protected void addHandlers() {
+	void addHandlers() {
 
 		this.addEventHandler(MouseEvent.ANY, (e) -> {
 			if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
@@ -97,39 +102,44 @@ public abstract class Symbols extends StackPane {
 	 * 
 	 */
 
-	private double[] getTopAnchor() {
-		double[] anchors = new double[2];
-		double[] pos = getPosition();
-		anchors[0] = pos[0] + (pos[3] / 2);
-		anchors[1] = pos[1];
+	public Point2D getTopAnchor() {
+		double x = getPosition()[0];
+		double y = getPosition()[1];
+		double height = getPosition()[2];
+		double width = getPosition()[3];
+		Point2D anchors = new Point2D(x+(width/2),y);
 		return anchors;
 	}
 
-	private double[] getBottomAnchor() {
-		double[] anchors = new double[2];
-		double[] pos = getPosition();
-		anchors[0] = pos[0] + (pos[3] / 2);
-		anchors[1] = pos[1] + pos[2];
+	public Point2D getBottomAnchor() {
+		double x = getPosition()[0];
+		double y = getPosition()[1];
+		double height = getPosition()[2];
+		double width = getPosition()[3];
+		Point2D anchors = new Point2D(x+(width/2),y+height);
 		return anchors;
 	}
 
-	private double[] getLeftAnchor() {
-		double[] anchors = new double[2];
-		double[] pos = getPosition();
-		anchors[0] = pos[0] + pos[3];
-		anchors[1] = pos[1] + (pos[2] / 2);
+	public Point2D getLeftAnchor() {
+		double x = getPosition()[0];
+		double y = getPosition()[1];
+		double height = getPosition()[2];
+		double width = getPosition()[3];
+		Point2D anchors = new Point2D(x,y+(height/2));
 		return anchors;
 	}
 
-	private double[] getRightAnchor() {
-		double[] anchors = new double[2];
+	public Point2D getRightAnchor() {
+		double x = getPosition()[0];
+		double y = getPosition()[1];
+		double height = getPosition()[2];
+		double width = getPosition()[3];
 		double[] pos = getPosition();
-		anchors[0] = pos[0] + pos[3];
-		anchors[1] = pos[1] + (pos[2] / 2);
+		Point2D anchors = new Point2D(x+width,y+(height/2));
 		return anchors;
 	}
 
-	private double[] getPosition() {
+	protected double[] getPosition() {
 		double[] values = new double[4];
 		values[0] = this.getTranslateX();
 		values[1] = this.getTranslateY();
@@ -138,9 +148,9 @@ public abstract class Symbols extends StackPane {
 		return values;
 	}
 
-	public double[] getArrowAnchors(Symbols endElement) {
+	public Point2D[] getArrowAnchors(Symbols endElement) {
 
-		double[] anchors = new double[4];
+		Point2D[] anchors = new Point2D[2];
 		Point2D startTop, startBottom, startLeft, startRight, endTop, endBottom, endLeft, endRight, finalStart,
 				finalEnd;
 
@@ -150,19 +160,19 @@ public abstract class Symbols extends StackPane {
 		finalStart = null;
 		finalEnd = null;
 		
-		startTop = new Point2D(this.getTopAnchor()[0], this.getTopAnchor()[1]);
-		startBottom = new Point2D(this.getBottomAnchor()[0], this.getBottomAnchor()[1]);
-		startRight = new Point2D(this.getRightAnchor()[0], this.getRightAnchor()[1]);
-		startLeft = new Point2D(this.getLeftAnchor()[0], this.getLeftAnchor()[1]);
+		startTop = this.getTopAnchor();
+		startBottom = this.getBottomAnchor();
+		startRight = this.getRightAnchor();
+		startLeft = this.getLeftAnchor();
 		startList.add(startTop);
 		startList.add(startBottom);
 		startList.add(startRight);
 		startList.add(startLeft);
 		
-		endTop = new Point2D(endElement.getTopAnchor()[0], endElement.getTopAnchor()[1]);
-		endBottom = new Point2D(endElement.getBottomAnchor()[0], endElement.getBottomAnchor()[1]);
-		endRight = new Point2D(endElement.getRightAnchor()[0], endElement.getRightAnchor()[1]);
-		endLeft = new Point2D(endElement.getLeftAnchor()[0], endElement.getLeftAnchor()[1]);
+		endTop = endElement.getTopAnchor();
+		endBottom = endElement.getBottomAnchor();
+		endRight = endElement.getRightAnchor();
+		endLeft = endElement.getLeftAnchor();
 		endList.add(endTop);
 		endList.add(endBottom);
 		endList.add(endRight);
@@ -171,27 +181,32 @@ public abstract class Symbols extends StackPane {
 		double dist = 1000000;
 
 		for (Point2D currStart : startList) {
-			System.out.println("New startpoint!!!!"); // TEST
 			for (Point2D currEnd : endList) {
-				System.out.println("New endpoint!"); // TEST
 				double currDist = currStart.distance(currEnd);
 				if (dist > currDist) {
-					System.out.println("New smallest distance. Was: "+dist+" is now: "+currDist); // TEST
 					finalStart = currStart;
 					finalEnd = currEnd;
-					System.out.println("Anchors, start: "+finalStart+" end: "+finalEnd); // TEST
 					dist = currDist;
 				}
 			}
 
 		}
-		anchors[0] = finalStart.getX();
-		anchors[1] = finalStart.getY();
-		anchors[2] = finalEnd.getX();
-		anchors[3] = finalEnd.getY();
+		anchors[0] = finalStart;
+		anchors[1] = finalEnd;
+		
 		return anchors;
 	}
 
+	public void setArrowed(ArrowSymbol arrow) {
+		this.arrow = arrow;
+		arrowed = true;
+	}
+	
+	public void removeArrow() {
+		arrow = null;
+		arrowed = false;
+	}
+	
 	// SELECTION METHODS
 
 	private void setSelected() {
