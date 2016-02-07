@@ -1,13 +1,12 @@
 package symbols;
 
-import interfaces.iElements;
+import gui.AppWindow;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeLineJoin;
 
 public class DecisionSymbol extends Symbols {
 
@@ -20,17 +19,15 @@ public class DecisionSymbol extends Symbols {
 							bottomLineX,
 							bottomLineY,
 							leftLineX,
-							leftLineY,
-							topLineX,
-							topLineY;
+							leftLineY;
 	private MoveTo topPoint;
 	private LineTo 	rightLine,
 					bottomLine,
 					leftLine,
 					topLine;
 
-	public DecisionSymbol(iElements listener) {
-		super(listener,true);
+	public DecisionSymbol(AppWindow listener) {
+		super(listener);
 		
 		startPointX = new SimpleDoubleProperty(25);
 		startPointY = new SimpleDoubleProperty(0);
@@ -68,13 +65,15 @@ public class DecisionSymbol extends Symbols {
 		
 		romb.getElements().addAll(topPoint,rightLine,bottomLine,leftLine,topLine);
 		
-		romb.setFill(Color.WHITE);
-		romb.setStroke(Color.BLACK);
-		romb.setStrokeWidth(2);
-		this.getChildren().add(romb);
+		romb.fillProperty().bind(FILL_COLOR);
+		romb.strokeProperty().bind(STROKE_COLOR);
+		romb.strokeWidthProperty().bind(STROKE_WIDTH);
+		romb.setStrokeLineJoin(StrokeLineJoin.ROUND);
+		
+		// romb.setStroke(STROKE_COLOR);
+		// romb.setStrokeWidth(STROKE_WIDTH);
 		updateSize();
-
-		this.getChildren().add(symbolText);
+		this.getChildren().addAll(romb,symbolText);
 	}
 
 	void updateSize() {

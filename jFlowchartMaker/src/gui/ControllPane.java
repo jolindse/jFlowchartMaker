@@ -4,7 +4,8 @@ package gui;
 
 
 
-import interfaces.iElements;
+import interfaces.iConnectors;
+import interfaces.iSymbols;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
@@ -13,19 +14,20 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 public class ControllPane extends GridPane {
-	private iElements listener;
+	private iSymbols listener;
+	private iConnectors conListener;
 	private Rectangle process, decision;
 	private Ellipse terminator;
 	private Effect effect;
 	private Button arrow;
 	private boolean isSelected = false;
 	
-	public ControllPane(iElements ev) {
+	public ControllPane(AppWindow ev) {
 		listener = ev;
+		conListener = ev;
 		
 		this.setPadding(new Insets(10, 10, 10, 10));
 		this.setHgap(10);
@@ -78,7 +80,7 @@ public class ControllPane extends GridPane {
 		
 		arrow = new Button("Arrow");
 		arrow.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) ->{
-			listener.addArrow();
+			conListener.addConnector();
 			e.consume();
 		});
 		this.add(arrow,3,0);

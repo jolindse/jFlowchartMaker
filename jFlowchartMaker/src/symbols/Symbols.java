@@ -4,70 +4,97 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import gui.AppWindow;
+import gui.GuiConstans;
 import interfaces.iElements;
+import interfaces.iSelections;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Effect;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 public abstract class Symbols extends StackPane {
 
-	protected iElements listener;
+	protected iSelections listener;
+	protected iElements elListener;
 	protected boolean selected = false;
 	protected boolean connected = false;
-	protected boolean textOnStart;
-	protected ArrowSymbol connection = null;
+	protected List<Connectors> connections;
+	protected double height, width, x, y;
+
+	//protected double STROKE_WIDTH = 2;
+	//protected Color FILL_COLOR = Color.WHITE;
+	//protected Color STROKE_COLOR = Color.BLACK;
+	//protected Color SELECTION_COLOR = Color.BLACK;
+	//protected Color TEXT_COLOR = Color.BLACK;
+	protected Effect ELEMENT_SHADOW = new DropShadow(5, Color.BLACK);
+
+	protected ObjectProperty<Color> FILL_COLOR, STROKE_COLOR, TEXT_COLOR; 
+	protected SimpleDoubleProperty STROKE_WIDTH;
+	
 	
 	protected Text symbolText;
-	
-	public Symbols(iElements listener, boolean textOnStart) {
-		this.listener = listener;
-		if (textOnStart) {
-			initText();
-		}
-		addHandlers();
-	}
 
-	void addHandlers() {
+	public Symbols(AppWindow eh) {
+		listener = eh;
+		elListener = eh;
 
-		this.addEventHandler(MouseEvent.ANY, (e) -> {
-			if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
-				listener.moveElement(e);
-			}
-
-			if (e.getEventType().equals(MouseEvent.MOUSE_CLICKED)) {
-				Symbols currSymbol = (Symbols) e.getSource();
-				if (e.isShiftDown()) {
-					listener.addElementToSelections(currSymbol);
-				} else {
-					listener.selectElement(currSymbol);
-				}
-			}
-
-			if (e.getEventType().equals(MouseEvent.MOUSE_ENTERED)) {
-				setSelected();
-			}
-
-			if (e.getEventType().equals(MouseEvent.MOUSE_EXITED)) {
-				setDeselected();
-			}
-		});
-	}
-
-	protected void initText() {
+		// setBackground(new Background(new BackgroundFill(Color.AQUA,
+		// CornerRadii.EMPTY, Insets.EMPTY))); // TEST
+		// this.paddingProperty().set(new Insets(0, 0, 0, 0));
+		
+		FILL_COLOR = new SimpleObjectProperty<>(Color.WHITE);
+		STROKE_COLOR = new SimpleObjectProperty<>(Color.BLACK);
+		TEXT_COLOR = new SimpleObjectProperty<>(Color.BLACK);
+		STROKE_WIDTH = new SimpleDoubleProperty(2);
+		
+		connections = new ArrayList<>();
 		symbolText = new Text(getTextFromDialog());
+		symbolText.fillProperty().bind(TEXT_COLOR);
 		symbolText.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
 			if (e.getClickCount() == 2) {
 				symbolText.setText(changeText(symbolText.getText()));
 				updateSize();
 			}
+		});
+
+		this.addEventHandler(MouseEvent.ANY, (e) -> {
+			if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
+				elListener.moveElement(e);
+			}
+
+			if (e.getEventType().equals(MouseEvent.MOUSE_CLICKED)) {
+				Symbols currSymbol = (Symbols) e.getSource();
+				if (e.isShiftDown()) {
+					listener.selectElement(currSymbol);
+					setSelected();
+					e.consume();
+				} else {
+					listener.selectElement(currSymbol);
+					setSelected();
+					e.consume();
+				}
+			}
+
+			if (e.getEventType().equals(MouseEvent.MOUSE_ENTERED)) {
+				setEffect(ELEMENT_SHADOW);
+			}
+
+			if (e.getEventType().equals(MouseEvent.MOUSE_EXITED)) {
+				if (!selected) {
+					setEffect(null);
+					setDeselected();
+				}
+			}
+	
 		});
 	}
 
@@ -95,136 +122,75 @@ public abstract class Symbols extends StackPane {
 		return currText;
 	}
 
-	/*
-	 * ANCHORPOINT METHODS FOR ARROWS
-	 * 
-	 * returns the X,Y of the arrow anchor points.
-	 * 
-	 */
-
 	public Point2D getTopAnchor() {
-		double x = getPosition()[0];
-		double y = getPosition()[1];
-		double height = getPosition()[2];
-		double width = getPosition()[3];
-		Point2D anchors = new Point2D(x+(width/2),y);
+		getPosition();
+		Point2D anchors = new Point2D(x + (width / 2), y);
 		return anchors;
 	}
 
 	public Point2D getBottomAnchor() {
-		double x = getPosition()[0];
-		double y = getPosition()[1];
-		double height = getPosition()[2];
-		double width = getPosition()[3];
-		Point2D anchors = new Point2D(x+(width/2),y+height);
+		getPosition();
+		Point2D anchors = new Point2D(x + (width / 2), y + height);
 		return anchors;
 	}
 
 	public Point2D getLeftAnchor() {
-		double x = getPosition()[0];
-		double y = getPosition()[1];
-		double height = getPosition()[2];
-		double width = getPosition()[3];
-		Point2D anchors = new Point2D(x,y+(height/2));
+		getPosition();
+		Point2D anchors = new Point2D(x, y + (height / 2));
 		return anchors;
 	}
 
 	public Point2D getRightAnchor() {
-		double x = getPosition()[0];
-		double y = getPosition()[1];
-		double height = getPosition()[2];
-		double width = getPosition()[3];
-		double[] pos = getPosition();
-		Point2D anchors = new Point2D(x+width,y+(height/2));
+		getPosition();
+		Point2D anchors = new Point2D(x + width, y + (height / 2));
 		return anchors;
 	}
 
-	protected double[] getPosition() {
-		double[] values = new double[4];
-		values[0] = this.getTranslateX();
-		values[1] = this.getTranslateY();
-		values[2] = this.getBoundsInLocal().getHeight();
-		values[3] = this.getBoundsInLocal().getWidth();
-		return values;
-	}
-
-	public Point2D[] getArrowAnchors(Symbols endElement) {
-
-		Point2D[] anchors = new Point2D[2];
-		Point2D startTop, startBottom, startLeft, startRight, endTop, endBottom, endLeft, endRight, finalStart,
-				finalEnd;
-
-		List<Point2D> startList = new ArrayList<>();
-		List<Point2D> endList = new ArrayList<>();
-		
-		finalStart = null;
-		finalEnd = null;
-		
-		startTop = this.getTopAnchor();
-		startBottom = this.getBottomAnchor();
-		startRight = this.getRightAnchor();
-		startLeft = this.getLeftAnchor();
-		startList.add(startTop);
-		startList.add(startBottom);
-		startList.add(startRight);
-		startList.add(startLeft);
-		
-		endTop = endElement.getTopAnchor();
-		endBottom = endElement.getBottomAnchor();
-		endRight = endElement.getRightAnchor();
-		endLeft = endElement.getLeftAnchor();
-		endList.add(endTop);
-		endList.add(endBottom);
-		endList.add(endRight);
-		endList.add(endLeft);
-
-		double dist = 1000000;
-
-		for (Point2D currStart : startList) {
-			for (Point2D currEnd : endList) {
-				double currDist = currStart.distance(currEnd);
-				if (dist > currDist) {
-					finalStart = currStart;
-					finalEnd = currEnd;
-					dist = currDist;
-				}
-			}
-
-		}
-		anchors[0] = finalStart;
-		anchors[1] = finalEnd;
-		
-		return anchors;
+	protected void getPosition() {
+		x = getTranslateX();
+		y = getTranslateY();
+		height = getBoundsInLocal().getHeight() - 10;
+		width = getBoundsInLocal().getWidth() - 10;
 	}
 
 	// METHODS TO HANDLE CONNECTION
-	
-	public void setConnected(ArrowSymbol arrow) {
-		connection = arrow;
+
+	public void setConnected(Connectors connection) {
+		connections.add(connection);
 		connected = true;
 	}
-	
-	public void removeConnected() {
-		connected = false;
+
+	public void removeConnected(Connectors currConnection) {
+		connections.remove(currConnection);
+		if (connections.isEmpty()) {
+			connected = false;
+		}
 	}
-	
+
 	public boolean isConnected() {
 		return connected;
 	}
-	
-	public ArrowSymbol getConnection() {
-		return connection;
+
+	public List<Connectors> getConnections() {
+		return connections;
 	}
-	
+
 	// SELECTION METHODS
 
-	private void setSelected() {
-		this.setEffect(new DropShadow(5, Color.BLACK));
+	public void setSelected() {
+		selected = true;
+		STROKE_COLOR.set(Color.CYAN);
 	}
 
 	public void setDeselected() {
-		this.setEffect(null);
+		selected = false;
+		setEffect(null);
+		STROKE_COLOR.set(Color.BLACK);
 	}
+
+	// COLOR METHODS
+
+	// IMPLEMENTED
 
 	abstract void updateSize();
 

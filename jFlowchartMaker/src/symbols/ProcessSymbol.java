@@ -1,27 +1,21 @@
 package symbols;
 
-import interfaces.iElements;
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
+import gui.AppWindow;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 
 public class ProcessSymbol extends Symbols {
 
 	private Rectangle square;
 
-	public ProcessSymbol(iElements listener) {
-		super(listener,true);
+	public ProcessSymbol(AppWindow listener) {
+		super(listener);
 
 		square = new Rectangle(100, 50);
-		square.setFill(Color.WHITE);
-		square.setStroke(Color.BLACK);
-		square.setStrokeWidth(2);
+		square.fillProperty().bind(FILL_COLOR);
+		square.strokeProperty().bind(STROKE_COLOR);
+		square.strokeWidthProperty().bind(STROKE_WIDTH);
 		this.getChildren().add(square);
 		updateSize();
-
 		
 		this.getChildren().add(symbolText);
 	}

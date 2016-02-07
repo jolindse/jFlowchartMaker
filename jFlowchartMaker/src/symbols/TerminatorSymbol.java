@@ -1,20 +1,17 @@
 package symbols;
 
-import interfaces.iElements;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
+import gui.AppWindow;
 import javafx.scene.shape.Ellipse;
-import javafx.scene.text.Text;
 
 public class TerminatorSymbol extends Symbols {
 	private Ellipse elipse;
 
-	public TerminatorSymbol (iElements listener) {
-		super(listener,true);
+	public TerminatorSymbol (AppWindow listener) {
+		super(listener);
 		elipse = new Ellipse(40,20);
-		elipse.setFill(Color.WHITE);
-		elipse.setStroke(Color.BLACK);
-		elipse.setStrokeWidth(2);
+		elipse.fillProperty().bind(FILL_COLOR);
+		elipse.strokeProperty().bind(STROKE_COLOR);
+		elipse.strokeWidthProperty().bind(STROKE_WIDTH);
 		this.getChildren().add(elipse);
 
 		updateSize();
