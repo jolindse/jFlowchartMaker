@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import gui.AppWindow;
-import gui.GuiConstans;
 import interfaces.iElements;
 import interfaces.iSelections;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.effect.DropShadow;
@@ -30,11 +28,6 @@ public abstract class Symbols extends StackPane {
 	protected List<Connectors> connections;
 	protected double height, width, x, y;
 
-	//protected double STROKE_WIDTH = 2;
-	//protected Color FILL_COLOR = Color.WHITE;
-	//protected Color STROKE_COLOR = Color.BLACK;
-	//protected Color SELECTION_COLOR = Color.BLACK;
-	//protected Color TEXT_COLOR = Color.BLACK;
 	protected Effect ELEMENT_SHADOW = new DropShadow(5, Color.BLACK);
 
 	protected ObjectProperty<Color> FILL_COLOR, STROKE_COLOR, TEXT_COLOR; 
@@ -47,10 +40,6 @@ public abstract class Symbols extends StackPane {
 		listener = eh;
 		elListener = eh;
 
-		// setBackground(new Background(new BackgroundFill(Color.AQUA,
-		// CornerRadii.EMPTY, Insets.EMPTY))); // TEST
-		// this.paddingProperty().set(new Insets(0, 0, 0, 0));
-		
 		FILL_COLOR = new SimpleObjectProperty<>(Color.WHITE);
 		STROKE_COLOR = new SimpleObjectProperty<>(Color.BLACK);
 		TEXT_COLOR = new SimpleObjectProperty<>(Color.BLACK);

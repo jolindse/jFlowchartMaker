@@ -17,6 +17,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
 import javafx.stage.Stage;
@@ -32,6 +33,7 @@ public class AppWindow implements iElements, iSymbols, iConnectors, iSelections 
 	private BorderPane root;
 	private ContentArea content;
 	private ControllPane controllpane;
+	private MainMenu menubar;
 		
 	private List<Symbols> selectedElements;
 	private List<Connectors> selectedConnectors;
@@ -54,8 +56,12 @@ public class AppWindow implements iElements, iSymbols, iConnectors, iSelections 
 
 		content = new ContentArea(this);
 		controllpane = new ControllPane(this);
-
-		root.setTop(controllpane);
+		menubar = new MainMenu();
+		
+		VBox topBox = new VBox();
+		topBox.getChildren().addAll(menubar,controllpane);
+		
+		root.setTop(topBox);
 		root.setCenter(content);
 		
 		elements.addListener(new ListChangeListener<Node>() {
