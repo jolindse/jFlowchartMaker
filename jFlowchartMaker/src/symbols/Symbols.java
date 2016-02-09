@@ -10,7 +10,7 @@ import interfaces.iSelections;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.geometry.Point2D;
+import javafx.geometry.Insets;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
@@ -25,26 +25,30 @@ public abstract class Symbols extends StackPane {
 	protected iElements elListener;
 	protected boolean selected = false;
 	protected boolean connected = false;
+	protected boolean connectable = true;
 	protected List<Connectors> connections;
-	protected double height, width, x, y;
 
 	protected Effect ELEMENT_SHADOW = new DropShadow(5, Color.BLACK);
 
-	protected ObjectProperty<Color> FILL_COLOR, STROKE_COLOR, TEXT_COLOR; 
+	protected ObjectProperty<Color> FILL_COLOR, STROKE_COLOR, TEXT_COLOR;
 	protected SimpleDoubleProperty STROKE_WIDTH;
-	
-	
-	protected Text symbolText;
 
+	protected Text symbolText;
+	protected int id;
+	private double x, y, width, height;
+	private static int idCounter = 0;
+	
 	public Symbols(AppWindow eh) {
 		listener = eh;
 		elListener = eh;
+
+		setPadding(new Insets(0, 0, 0, 0));
 
 		FILL_COLOR = new SimpleObjectProperty<>(Color.WHITE);
 		STROKE_COLOR = new SimpleObjectProperty<>(Color.BLACK);
 		TEXT_COLOR = new SimpleObjectProperty<>(Color.BLACK);
 		STROKE_WIDTH = new SimpleDoubleProperty(2);
-		
+
 		connections = new ArrayList<>();
 		symbolText = new Text(getTextFromDialog());
 		symbolText.fillProperty().bind(TEXT_COLOR);
@@ -83,7 +87,8 @@ public abstract class Symbols extends StackPane {
 					setDeselected();
 				}
 			}
-	
+			id = idCounter;
+			idCounter++;
 		});
 	}
 
@@ -111,53 +116,30 @@ public abstract class Symbols extends StackPane {
 		return currText;
 	}
 
-	public Point2D getTopAnchor() {
-		getPosition();
-		Point2D anchors = new Point2D(x + (width / 2), y);
-		return anchors;
-	}
-
-	public Point2D getBottomAnchor() {
-		getPosition();
-		Point2D anchors = new Point2D(x + (width / 2), y + height);
-		return anchors;
-	}
-
-	public Point2D getLeftAnchor() {
-		getPosition();
-		Point2D anchors = new Point2D(x, y + (height / 2));
-		return anchors;
-	}
-
-	public Point2D getRightAnchor() {
-		getPosition();
-		Point2D anchors = new Point2D(x + width, y + (height / 2));
-		return anchors;
-	}
-
-	protected void getPosition() {
-		x = getTranslateX();
-		y = getTranslateY();
-		height = getBoundsInLocal().getHeight() - 10;
-		width = getBoundsInLocal().getWidth() - 10;
-	}
-
 	// METHODS TO HANDLE CONNECTION
 
 	public void setConnected(Connectors connection) {
-		connections.add(connection);
-		connected = true;
+		if (connectable) {
+			connections.add(connection);
+			connected = true;
+		}
 	}
 
 	public void removeConnected(Connectors currConnection) {
-		connections.remove(currConnection);
-		if (connections.isEmpty()) {
-			connected = false;
+		if (connectable) {
+			connections.remove(currConnection);
+			if (connections.isEmpty()) {
+				connected = false;
+			}
 		}
 	}
 
 	public boolean isConnected() {
 		return connected;
+	}
+	
+	public boolean isConnectable() {
+		return connectable;
 	}
 
 	public List<Connectors> getConnections() {
@@ -168,17 +150,43 @@ public abstract class Symbols extends StackPane {
 
 	public void setSelected() {
 		selected = true;
-		STROKE_COLOR.set(Color.CYAN);
+		setEffect(new DropShadow(20, Color.DARKBLUE));
+		;
 	}
 
 	public void setDeselected() {
 		selected = false;
 		setEffect(null);
-		STROKE_COLOR.set(Color.BLACK);
 	}
 
 	// COLOR METHODS
 
+	public void setFillColor(Color currColor) {
+		FILL_COLOR.set(currColor);
+	}
+
+	public void setStrokeColor(Color currColor) {
+		STROKE_COLOR.set(currColor);
+	}
+
+	// METHODS FOR SAVING
+	
+	
+	private void getPosition() {
+		
+	x = getBoundsInParent().getMinX();
+	y = getBoundsInParent().getMinY();
+
+	height = getBoundsInLocal().getHeight();
+	width = getBoundsInLocal().getWidth();
+	}
+	
+	public String getSaveString() {
+		String save = null;
+		getPosition();
+		
+		return save;
+	}
 	// IMPLEMENTED
 
 	abstract void updateSize();

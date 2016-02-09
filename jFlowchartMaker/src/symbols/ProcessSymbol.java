@@ -23,6 +23,13 @@ public class ProcessSymbol extends Symbols {
 	void updateSize() {
 		double width = symbolText.getLayoutBounds().getWidth() + 20;
 		double height = symbolText.getLayoutBounds().getHeight() + 20;
+		if (width<60) {
+			width = 60;
+		}
+		
+		if (height<40) {
+			height = 40;
+		}
 		square.widthProperty().set(width);
 		square.heightProperty().set(height);
 	}

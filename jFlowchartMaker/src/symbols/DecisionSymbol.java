@@ -80,6 +80,14 @@ public class DecisionSymbol extends Symbols {
 		double width = symbolText.getLayoutBounds().getWidth() + 30;
 		double height = symbolText.getLayoutBounds().getHeight() +50;
 		
+		if (width<80) {
+			width = 80;
+		}
+		
+		if (height<40) {
+			height = 40;
+		}
+		
 		startPointX.set(width/2);
 		leftLineY.set(height/2);
 		rightLineX.set(width);

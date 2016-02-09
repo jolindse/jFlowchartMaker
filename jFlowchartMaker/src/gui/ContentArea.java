@@ -11,7 +11,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import symbols.Symbols;
 
 public class ContentArea extends AnchorPane {
 
@@ -20,6 +19,7 @@ public class ContentArea extends AnchorPane {
 	
 	public ContentArea (iElements ev) {
 		listener = ev;
+		
 		
 		this.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
 		this.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {

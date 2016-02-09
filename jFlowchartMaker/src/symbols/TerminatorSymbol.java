@@ -22,6 +22,13 @@ public class TerminatorSymbol extends Symbols {
 	void updateSize() {
 		double width = symbolText.getLayoutBounds().getWidth() + 5;
 		double height = symbolText.getLayoutBounds().getHeight() + 2;
+		if (width<40) {
+			width = 40;
+		}
+		
+		if (height<20) {
+			height = 20;
+		}
 		elipse.radiusXProperty().set(width);
 		elipse.radiusYProperty().set(height);
 	}
