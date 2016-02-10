@@ -21,9 +21,9 @@ public abstract class Connectors {
 	private double x, y, width, height;
 	private Path path;
 	
-	protected SimpleDoubleProperty startX, startY, endX, endY, arrowOneX, arrowOneY;
+	protected SimpleDoubleProperty startX, startY, endX, endY, wingOneX, wingOneY, wingTwoX, wingTwoY;
 	protected double angle;
-	protected Point2D startAnchors, endAnchors, distancePoint, wingOne, wingTwo;
+	private Point2D startAnchors, endAnchors,  wingOne, wingTwo;
 	
 	
 	
@@ -34,15 +34,17 @@ public abstract class Connectors {
 	public Connectors(Symbols start, Symbols end) {
 		this.start = start;
 		this.end = end;
-		angle = 0;
+
 		getAnchors();
 		startX = new SimpleDoubleProperty(startAnchors.getX());
 		startY = new SimpleDoubleProperty(startAnchors.getY());
 		endX = new SimpleDoubleProperty(endAnchors.getX());
 		endY = new SimpleDoubleProperty(endAnchors.getY());
 
-        arrowOneX = new SimpleDoubleProperty(endAnchors.getX()-(Math.cos(angle)*20));
-        arrowOneY = new SimpleDoubleProperty(endAnchors.getY()-(Math.cos(angle)*20));
+        wingOneX = new SimpleDoubleProperty(wingOne.getX());
+        wingOneY = new SimpleDoubleProperty(wingOne.getY());
+        wingTwoX = new SimpleDoubleProperty(wingTwo.getX());
+        wingTwoY = new SimpleDoubleProperty(wingTwo.getY());
 
 	}
 	
@@ -54,50 +56,36 @@ public abstract class Connectors {
 	}
 	
 	private Point2D getTopAnchor(Symbols currSym) {
-		//System.out.println("TopAnchor"); // TEST
 		getPosition(currSym);
 		Point2D anchors = new Point2D(x + (width / 2), y);
 		return anchors;
 	}
 
 	private Point2D getBottomAnchor(Symbols currSym) {
-		//System.out.println("BottomAnchor"); // TEST
 		getPosition(currSym);
 		Point2D anchors = new Point2D(x + (width / 2), y + height);
 		return anchors;
 	}
 
 	private Point2D getLeftAnchor(Symbols currSym) {
-		//System.out.println("LeftAnchor"); // TEST
 		getPosition(currSym);
 		Point2D anchors = new Point2D(x, y + (height / 2));
 		return anchors;
 	}
 
 	private Point2D getRightAnchor(Symbols currSym) {
-		//System.out.println("RightAnchor"); // TEST
 		getPosition(currSym);
 		Point2D anchors = new Point2D(x + width, y + (height / 2));
 		return (anchors);
 	}
 
 	protected void getPosition(Symbols currSym) {
-		// System.out.println("LayoutX: "+currSym.getLayoutX()+" LayoutY: "+currSym.getLayoutY()); // TEST
-		// System.out.println("TranslateX: "+currSym.getTranslateX()+" TranslateY: "+currSym.getTranslateY()); // TEST
-		// System.out.println("TranslateX PROPERTIES: "+currSym.translateXProperty().getValue()+" TranslateY: "+currSym.translateYProperty().getValue()); // TEST
-
 
 		x = currSym.getTranslateX();
 		y = currSym.getTranslateY();
-		
-		//x = currSym.getTranslateX();
-		//y = currSym.getTranslateY();
-		
 
-	
 		height = currSym.calcHeight();
 		width = currSym.calcWidth();
-		System.out.println("ParentMinX: "+x+" ParentMinY :"+y+" Width: "+width+" Height: "+height); // TEST
 	}
 	
 	private void getAnchors() {
@@ -131,7 +119,7 @@ public abstract class Connectors {
 		endList.add(endRight);
 		endList.add(endLeft);
 
-		double dist = 1000000;  // Replace with scene diameter.
+		double dist = 10000000;
 
 		for (Point2D currStart : startList) {
 			for (Point2D currEnd : endList) {
@@ -146,21 +134,24 @@ public abstract class Connectors {
 		}
 		startAnchors = finalStart;
 		endAnchors = finalEnd;
-        calcAngle();
-		System.out.println("START ANCHORS: "+startAnchors+"\nEND ANCHORS: "+endAnchors);
-		
-	}
-
-    private void calcAngle(){
-
-        // double coords[] ={ endAnchors.getX()-10,endAnchors.getY()-10)
-        //double yMinLenght=;
-        // AffineTransform.getRotateInstance(Math.toRadians(angle), endAnchors.getX(), endAnchors.getY()).transform(pt, 0, pt, 0, 1);
-
-        double pathAngle = startAnchors.angle(endAnchors);
-        angle = (90-pathAngle);
-        //System.out.println("Angle: "+angle.getValue()+" AnglePath: "+pathAngle+" arrowAngle (degrees): "+arrowAngle+" in radians: "+Math.toRadians(arrowAngle)); // TEST
+        wingOne = setWings(40);
+        wingTwo = setWings(-40);
     }
+
+    private Point2D setWings(double diffAngle){
+        // Calculate point to move
+        x = endAnchors.getX()-0.05*(startAnchors.getX()-endAnchors.getX());
+        y = endAnchors.getY()-0.05*(startAnchors.getY()-endAnchors.getY());
+
+        // Rotate dot.
+        x -= endAnchors.getX();
+        y -= endAnchors.getY();
+        double newX = (x*Math.cos(diffAngle)-y*Math.sin(diffAngle))+endAnchors.getX();
+        double newY = (y*Math.cos(diffAngle)+x*Math.sin(diffAngle))+endAnchors.getY();
+
+        return new Point2D(newX,newY);
+    }
+
 
 	public void remove(Symbols currSymbol) {
 		if(start.equals(currSymbol)){
@@ -193,10 +184,10 @@ public abstract class Connectors {
 		startY.set(startAnchors.getY());
 		endX.set(endAnchors.getX());
 		endY.set(endAnchors.getY());
-        arrowOneX.set(endAnchors.getX()-(Math.cos(angle)*20));
-        arrowOneY.set(endAnchors.getY()-(Math.cos(angle)*20));
-
-
+        wingOneX.set(wingOne.getX());
+        wingOneY.set(wingOne.getY());
+        wingTwoX.set(wingTwo.getX());
+        wingTwoY.set(wingTwo.getY());
     }
 
 }

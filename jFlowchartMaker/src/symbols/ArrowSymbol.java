@@ -8,57 +8,51 @@ import javafx.scene.shape.Path;
 
 public class ArrowSymbol extends Connectors {
 
-	private Path arrow;
-	private double posetiveAngle = 45;
+    private Path arrow;
+
+	/*
+    private double posetiveAngle = 45;
 	private double negativeAngle = -45;
     private double wingLength = 40;
+	*/
 
-	public ArrowSymbol(Symbols startSymbol, Symbols endSymbol) {
-		super(startSymbol, endSymbol);
+    public ArrowSymbol(Symbols startSymbol, Symbols endSymbol) {
+        super(startSymbol, endSymbol);
 
 
-		System.out.println("Angle:"+angle); // TEST
+        arrow = new Path();
 
-		arrow = new Path();
-		MoveTo start = new MoveTo();
-		start.xProperty().bind(startX);
-		start.yProperty().bind(startY);
+        MoveTo start = new MoveTo();
+        start.xProperty().bind(startX);
+        start.yProperty().bind(startY);
 
-		LineTo end = new LineTo();
-		end.xProperty().bind(endX);
-		end.yProperty().bind(endY);
+        LineTo end = new LineTo();
+        end.xProperty().bind(endX);
+        end.yProperty().bind(endY);
 
-		LineTo wingOne = new LineTo();
-		//if (getWings()) {
-			wingOne.xProperty().bind(arrowOneX);
-			wingOne.yProperty().bind(arrowOneY);
-		//} else {
-		//	wingOne.xProperty().bind(end.xProperty().add(Math.cos(angle.get()) * 10));
-		//	wingOne.yProperty().bind(end.yProperty().add(Math.sin(angle.get()) * 10));
-		//}
-		
+        MoveTo endPoint = new MoveTo();
+        endPoint.xProperty().bind(endX);
+        endPoint.yProperty().bind(endX);
 
-		MoveTo back = new MoveTo();
-		back.xProperty().bind(endX);
-		back.yProperty().bind(endY);
+        LineTo wingOne = new LineTo();
+		wingOne.xProperty().bind(wingOneX);
+        wingOne.yProperty().bind(wingOneY);
 
-		LineTo wingTwo = new LineTo();
+        MoveTo back = new MoveTo();
+        back.xProperty().bind(endX);
+        back.yProperty().bind(endY);
 
-		//if(getWings()){
-			wingTwo.xProperty().bind(end.xProperty().add(Math.cos(angle) * wingLength));
-			wingTwo.yProperty().bind(end.yProperty().add(Math.sin(angle) * wingLength));
-		//} else {
-		//	wingTwo.xProperty().bind(end.xProperty().subtract(Math.cos(angle.get()) * 10));
-		//	wingTwo.yProperty().bind(end.yProperty().subtract(Math.sin(angle.get()) * 10));
-		//}
+        LineTo wingTwo = new LineTo();
+        wingTwo.xProperty().bind(wingTwoX);
+        wingTwo.yProperty().bind(wingTwoY);
 
-		arrow.getElements().addAll(start, end, wingOne);
-		arrow.setStroke(STROKE_COLOR);
-		arrow.setStrokeWidth(STROKEWIDTH);
+        arrow.getElements().addAll(start, end, wingOne, back, wingTwo);
+        arrow.setStroke(STROKE_COLOR);
+        arrow.setStrokeWidth(STROKEWIDTH);
 
-	}
+    }
 
-	public Path getArrow() {
-		return arrow;
-	}
+    public Path getArrow() {
+        return arrow;
+    }
 }

@@ -41,7 +41,7 @@ public class AppWindow implements iElements, iSymbols, iConnectors, iSelections 
 	private String symbolType;
 	private Group currSymbol;
 
-	public AppWindow(Stage stage, App controller) {
+	public AppWindow(Stage stage) {
 		root = new BorderPane();
 		Scene scene = new Scene(root, 600, 800);
 

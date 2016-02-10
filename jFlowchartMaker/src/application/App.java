@@ -20,7 +20,7 @@ public class App extends Application {
 		elementsAdded = FXCollections.observableArrayList();
 		elementsSelected = new Symbols[2];
 
-		view = new AppWindow(primaryStage, this);
+		view = new AppWindow(primaryStage);
 
 	}
 
