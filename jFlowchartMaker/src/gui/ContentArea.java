@@ -15,11 +15,11 @@ import javafx.scene.text.Text;
 public class ContentArea extends AnchorPane {
 
 	private iElements listener;
-	private Text testtext;
-	
+
 	public ContentArea (iElements ev) {
 		listener = ev;
-		
+
+
 		
 		this.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
 		this.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
@@ -27,7 +27,7 @@ public class ContentArea extends AnchorPane {
 		});
 		
 		addEventHandler(MouseEvent.MOUSE_MOVED, (e) -> {
-			
+
 		});
 	}
 

@@ -6,9 +6,9 @@ import symbols.Connectors;
 import symbols.Symbols;
 
 public interface iSelections {
-	public void selectElement(Symbols currSymbol);
-	public void selectConnector(Connectors currConnector);
-	public List<Symbols> getSelectedElement();
-	public void clearSelected();
-	public void clearAll();
+	void selectElement(Symbols currSymbol);
+	void selectConnector(Connectors currConnector);
+	List<Symbols> getSelectedElement();
+	void clearSelected();
+	void clearAll();
 }

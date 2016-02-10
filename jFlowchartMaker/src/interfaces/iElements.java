@@ -6,8 +6,8 @@ import symbols.Symbols;
 
 public interface iElements {
 	
-	public void addElement(MouseEvent e);
-	public void removeElement(Symbols currSymbol);
-	public void moveElement(MouseEvent e);
-	public void setElementColor(String type);
+	void addElement(MouseEvent e);
+	void removeElement(Symbols currSymbol);
+	void moveElement(MouseEvent e);
+	void setElementColor(String type);
 }

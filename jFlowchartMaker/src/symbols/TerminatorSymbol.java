@@ -20,8 +20,8 @@ public class TerminatorSymbol extends Symbols {
 	}
 
 	void updateSize() {
-		double width = symbolText.getLayoutBounds().getWidth() + 5;
-		double height = symbolText.getLayoutBounds().getHeight() + 2;
+		width = symbolText.getLayoutBounds().getWidth() + 5;
+		height = symbolText.getLayoutBounds().getHeight() + 2;
 		if (width<40) {
 			width = 40;
 		}
@@ -31,5 +31,15 @@ public class TerminatorSymbol extends Symbols {
 		}
 		elipse.radiusXProperty().set(width);
 		elipse.radiusYProperty().set(height);
+	}
+
+	@Override
+	double calcHeight() {
+		return height*2;
+	}
+
+	@Override
+	double calcWidth() {
+		return width*2;
 	}
 }

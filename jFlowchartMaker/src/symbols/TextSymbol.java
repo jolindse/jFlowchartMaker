@@ -19,4 +19,14 @@ public class TextSymbol extends Symbols {
 
 	}
 
+	@Override
+	double calcHeight() {
+		return 0;
+	}
+
+	@Override
+	double calcWidth() {
+		return 0;
+	}
+
 }

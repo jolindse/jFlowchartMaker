@@ -21,8 +21,8 @@ public class ProcessSymbol extends Symbols {
 	}
 
 	void updateSize() {
-		double width = symbolText.getLayoutBounds().getWidth() + 20;
-		double height = symbolText.getLayoutBounds().getHeight() + 20;
+		width = symbolText.getLayoutBounds().getWidth() + 20;
+		height = symbolText.getLayoutBounds().getHeight() + 20;
 		if (width<60) {
 			width = 60;
 		}
@@ -32,5 +32,16 @@ public class ProcessSymbol extends Symbols {
 		}
 		square.widthProperty().set(width);
 		square.heightProperty().set(height);
+	}
+
+	@Override
+	double calcHeight() {
+		return height;
+	}
+
+	@Override
+	double calcWidth() {
+
+        return width;
 	}
 }

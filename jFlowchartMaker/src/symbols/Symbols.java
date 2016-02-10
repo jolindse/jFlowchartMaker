@@ -35,7 +35,7 @@ public abstract class Symbols extends StackPane {
 
 	protected Text symbolText;
 	protected int id;
-	private double x, y, width, height;
+	protected double width, height, x, y;
 	private static int idCounter = 0;
 	
 	public Symbols(AppWindow eh) {
@@ -151,7 +151,6 @@ public abstract class Symbols extends StackPane {
 	public void setSelected() {
 		selected = true;
 		setEffect(new DropShadow(20, Color.DARKBLUE));
-		;
 	}
 
 	public void setDeselected() {
@@ -177,8 +176,8 @@ public abstract class Symbols extends StackPane {
 	x = getBoundsInParent().getMinX();
 	y = getBoundsInParent().getMinY();
 
-	height = getBoundsInLocal().getHeight();
-	width = getBoundsInLocal().getWidth();
+	height = calcHeight();
+	width = calcWidth();
 	}
 	
 	public String getSaveString() {
@@ -190,5 +189,7 @@ public abstract class Symbols extends StackPane {
 	// IMPLEMENTED
 
 	abstract void updateSize();
+	abstract double calcHeight();
+	abstract double calcWidth();
 
 }

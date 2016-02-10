@@ -1,5 +1,6 @@
 package symbols;
 
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
 import javafx.stage.Screen;
@@ -19,8 +21,8 @@ public abstract class Connectors {
 	private double x, y, width, height;
 	private Path path;
 	
-	protected SimpleDoubleProperty startX, startY, endX, endY,angle;
-	protected double startXv, startYv, endXv, endYv;
+	protected SimpleDoubleProperty startX, startY, endX, endY, arrowOneX, arrowOneY;
+	protected double angle;
 	protected Point2D startAnchors, endAnchors, distancePoint, wingOne, wingTwo;
 	
 	
@@ -32,22 +34,22 @@ public abstract class Connectors {
 	public Connectors(Symbols start, Symbols end) {
 		this.start = start;
 		this.end = end;
-		angle = new SimpleDoubleProperty();
+		angle = 0;
 		getAnchors();
 		startX = new SimpleDoubleProperty(startAnchors.getX());
 		startY = new SimpleDoubleProperty(startAnchors.getY());
 		endX = new SimpleDoubleProperty(endAnchors.getX());
 		endY = new SimpleDoubleProperty(endAnchors.getY());
+
+        arrowOneX = new SimpleDoubleProperty(endAnchors.getX()-(Math.cos(angle)*20));
+        arrowOneY = new SimpleDoubleProperty(endAnchors.getY()-(Math.cos(angle)*20));
+
 	}
 	
 
 	
 	public boolean getWings() {
-		if (startAnchors.getX()<endAnchors.getX()){
-			return true;
-		} else {
-			return false;
-		}
+		return startAnchors.getX() < endAnchors.getX();
 	
 	}
 	
@@ -80,21 +82,22 @@ public abstract class Connectors {
 	}
 
 	protected void getPosition(Symbols currSym) {
-		System.out.println("LayoutX: "+currSym.getLayoutX()+" LayoutY: "+currSym.getLayoutY()); // TEST
-		System.out.println("TranslateX: "+currSym.getTranslateX()+" TranslateY: "+currSym.getTranslateY()); // TEST
-		
+		// System.out.println("LayoutX: "+currSym.getLayoutX()+" LayoutY: "+currSym.getLayoutY()); // TEST
+		// System.out.println("TranslateX: "+currSym.getTranslateX()+" TranslateY: "+currSym.getTranslateY()); // TEST
+		// System.out.println("TranslateX PROPERTIES: "+currSym.translateXProperty().getValue()+" TranslateY: "+currSym.translateYProperty().getValue()); // TEST
 
-		x = currSym.getBoundsInParent().getMinX();
-		y = currSym.getBoundsInParent().getMinY();
+
+		x = currSym.getTranslateX();
+		y = currSym.getTranslateY();
 		
 		//x = currSym.getTranslateX();
 		//y = currSym.getTranslateY();
 		
-		System.out.println("ParentMinX: "+x+" ParentMinY :"+y); // TEST
+
 	
-		height = currSym.getBoundsInLocal().getHeight();
-		width = currSym.getBoundsInLocal().getWidth();
-		
+		height = currSym.calcHeight();
+		width = currSym.calcWidth();
+		System.out.println("ParentMinX: "+x+" ParentMinY :"+y+" Width: "+width+" Height: "+height); // TEST
 	}
 	
 	private void getAnchors() {
@@ -143,10 +146,21 @@ public abstract class Connectors {
 		}
 		startAnchors = finalStart;
 		endAnchors = finalEnd;
-		angle.set(Math.toDegrees(startAnchors.angle(endAnchors)));
+        calcAngle();
 		System.out.println("START ANCHORS: "+startAnchors+"\nEND ANCHORS: "+endAnchors);
 		
 	}
+
+    private void calcAngle(){
+
+        // double coords[] ={ endAnchors.getX()-10,endAnchors.getY()-10)
+        //double yMinLenght=;
+        // AffineTransform.getRotateInstance(Math.toRadians(angle), endAnchors.getX(), endAnchors.getY()).transform(pt, 0, pt, 0, 1);
+
+        double pathAngle = startAnchors.angle(endAnchors);
+        angle = (90-pathAngle);
+        //System.out.println("Angle: "+angle.getValue()+" AnglePath: "+pathAngle+" arrowAngle (degrees): "+arrowAngle+" in radians: "+Math.toRadians(arrowAngle)); // TEST
+    }
 
 	public void remove(Symbols currSymbol) {
 		if(start.equals(currSymbol)){
@@ -179,12 +193,10 @@ public abstract class Connectors {
 		startY.set(startAnchors.getY());
 		endX.set(endAnchors.getX());
 		endY.set(endAnchors.getY());
-		
-		startXv = startAnchors.getX();
-		startYv = startAnchors.getY();
-		endXv = startAnchors.getX();
-		endYv = startAnchors.getY();
-		
-	}
+        arrowOneX.set(endAnchors.getX()-(Math.cos(angle)*20));
+        arrowOneY.set(endAnchors.getY()-(Math.cos(angle)*20));
+
+
+    }
 
 }

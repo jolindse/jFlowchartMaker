@@ -121,7 +121,6 @@ public class ControllPane extends HBox {
 
 		Rectangle changeFillColor = new Rectangle(20, 20);
 		changeFillColor.fillProperty().bind(currColor);
-		;
 		changeFillColor.setStroke(Color.BLACK);
 		changeFillColor.setStrokeWidth(3);
 		changeFillColor.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {

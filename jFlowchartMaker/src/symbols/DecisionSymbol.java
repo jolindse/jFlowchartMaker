@@ -3,6 +3,7 @@ package symbols;
 import gui.AppWindow;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.geometry.Pos;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -11,8 +12,7 @@ import javafx.scene.shape.StrokeLineJoin;
 public class DecisionSymbol extends Symbols {
 
 	private Path romb;
-	
-	private DoubleProperty 	startPointX, 
+	private DoubleProperty 	startPointX,
 							startPointY,
 							rightLineX,
 							rightLineY,
@@ -74,11 +74,12 @@ public class DecisionSymbol extends Symbols {
 		// romb.setStrokeWidth(STROKE_WIDTH);
 		updateSize();
 		this.getChildren().addAll(romb,symbolText);
+
 	}
 
 	void updateSize() {
-		double width = symbolText.getLayoutBounds().getWidth() + 30;
-		double height = symbolText.getLayoutBounds().getHeight() +50;
+		width = symbolText.getLayoutBounds().getWidth() + 30;
+		height = symbolText.getLayoutBounds().getHeight() +50;
 		
 		if (width<80) {
 			width = 80;
@@ -95,5 +96,15 @@ public class DecisionSymbol extends Symbols {
 		bottomLineX.set(width/2);
 		bottomLineY.set(height);
 	}
-	
+
+    @Override
+    double calcHeight() {
+        return height;
+    }
+
+    @Override
+    double calcWidth() {
+        return width;
+    }
+
 }
