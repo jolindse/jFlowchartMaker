@@ -1,9 +1,5 @@
 package gui;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import application.App;
 import interfaces.iConnectors;
 import interfaces.iElements;
 import interfaces.iSelections;
@@ -19,13 +15,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.shape.Path;
 import javafx.stage.Stage;
-import symbols.ArrowSymbol;
-import symbols.Connectors;
-import symbols.DecisionSymbol;
-import symbols.ProcessSymbol;
-import symbols.Symbols;
-import symbols.TerminatorSymbol;
-import symbols.TextSymbol;
+import symbols.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AppWindow implements iElements, iSymbols, iConnectors, iSelections {
 

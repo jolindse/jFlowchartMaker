@@ -1,24 +1,16 @@
 package symbols;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import interfaces.iObjects;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 
-public class ArrowSymbol extends Connectors {
+public class ArrowSymbol extends Connectors implements iObjects {
 
     private Path arrow;
 
-	/*
-    private double posetiveAngle = 45;
-	private double negativeAngle = -45;
-    private double wingLength = 40;
-	*/
-
     public ArrowSymbol(Symbols startSymbol, Symbols endSymbol) {
         super(startSymbol, endSymbol);
-
 
         arrow = new Path();
 
@@ -50,6 +42,11 @@ public class ArrowSymbol extends Connectors {
         arrow.setStroke(STROKE_COLOR);
         arrow.setStrokeWidth(STROKEWIDTH);
 
+    }
+
+    @Override
+    public String getSaveString() {
+        return "Connector,"+start.getSymbolId()+","+end.getSymbolId();
     }
 
     public Path getArrow() {

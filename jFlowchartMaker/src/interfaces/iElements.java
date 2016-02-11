@@ -1,7 +1,6 @@
 package interfaces;
 
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import symbols.Symbols;
 
 public interface iElements {

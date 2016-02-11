@@ -1,34 +1,23 @@
 package symbols;
 
-import java.awt.geom.AffineTransform;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Path;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.geometry.Point2D;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Path;
-import javafx.stage.Screen;
-
 public abstract class Connectors {
 
-	private Symbols start, end;
+
 	private double x, y, width, height;
 	private Path path;
-	
+    private Point2D startAnchors, endAnchors,  wingOne, wingTwo;
+
 	protected SimpleDoubleProperty startX, startY, endX, endY, wingOneX, wingOneY, wingTwoX, wingTwoY;
-	protected double angle;
-	private Point2D startAnchors, endAnchors,  wingOne, wingTwo;
-	
-	
-	
+    protected Symbols start, end;
 	protected double STROKEWIDTH = 2;
-	protected Color FILL_COLOR = Color.BLACK;
 	protected Color STROKE_COLOR = Color.BLACK;
 
 	public Connectors(Symbols start, Symbols end) {
@@ -46,13 +35,6 @@ public abstract class Connectors {
         wingTwoX = new SimpleDoubleProperty(wingTwo.getX());
         wingTwoY = new SimpleDoubleProperty(wingTwo.getY());
 
-	}
-	
-
-	
-	public boolean getWings() {
-		return startAnchors.getX() < endAnchors.getX();
-	
 	}
 	
 	private Point2D getTopAnchor(Symbols currSym) {
@@ -139,9 +121,33 @@ public abstract class Connectors {
     }
 
     private Point2D setWings(double diffAngle){
-        // Calculate point to move
+
+        /*
+		double a = endAnchors.getX();
+		double b = endAnchors.getY();
+
+		// point B coordinates
+		double c = startAnchors.getX();
+		double d = startAnchors.getY();
+
+		// calculate distance between the two points
+		double DT = Math.sqrt(Math.pow((c - a), 2) + Math.pow((d - b), 2));
+
+		double D = 20.0; // distance to point C
+
+		double x;
+		double y;
+		double T = D / DT;
+
+		// finding point C coordinate
+		x = (1 - T) * a + T * c;
+		y = (1 - T) * b + T * d;
+        */
+
+		// Calculate point to move
         x = endAnchors.getX()-0.05*(startAnchors.getX()-endAnchors.getX());
         y = endAnchors.getY()-0.05*(startAnchors.getY()-endAnchors.getY());
+
 
         // Rotate dot.
         x -= endAnchors.getX();
@@ -179,7 +185,6 @@ public abstract class Connectors {
 
 	public void update() {
 		getAnchors();
-		
 		startX.set(startAnchors.getX());
 		startY.set(startAnchors.getY());
 		endX.set(endAnchors.getX());
@@ -190,4 +195,5 @@ public abstract class Connectors {
         wingTwoY.set(wingTwo.getY());
     }
 
+    // abstract String getSaveString();
 }

@@ -6,6 +6,7 @@ import interfaces.iConnectors;
 import interfaces.iElements;
 import interfaces.iSelections;
 import interfaces.iSymbols;
+import javafx.application.Platform;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -33,6 +34,9 @@ public class MainMenu extends MenuBar {
 		MenuItem load = new MenuItem("Load...");
 		MenuItem export = new MenuItem("Export to PDF");
 		MenuItem exit = new MenuItem("Exit");
+		exit.setOnAction((e) -> {
+			Platform.exit();
+		});
 		file.getItems().addAll(clear,getSeparator(),save,load,getSeparator(),export,getSeparator(),exit);
 		
 		symbols = new Menu("Symbols");

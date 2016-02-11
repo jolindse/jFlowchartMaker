@@ -1,9 +1,5 @@
 package symbols;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import gui.AppWindow;
 import interfaces.iElements;
 import interfaces.iSelections;
@@ -18,6 +14,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public abstract class Symbols extends StackPane {
 
@@ -70,6 +70,7 @@ public abstract class Symbols extends StackPane {
 					listener.selectElement(currSymbol);
 					setSelected();
 					e.consume();
+					// LÄGG IN DUBBELKLICK -> ÄNDRA TEXT
 				} else {
 					listener.selectElement(currSymbol);
 					setSelected();
@@ -180,16 +181,14 @@ public abstract class Symbols extends StackPane {
 	width = calcWidth();
 	}
 	
-	public String getSaveString() {
-		String save = null;
-		getPosition();
-		
-		return save;
-	}
+    public int getSymbolId(){
+        return id;
+    }
+
 	// IMPLEMENTED
 
 	abstract void updateSize();
 	abstract double calcHeight();
 	abstract double calcWidth();
-
+	// abstract String getSaveString();
 }

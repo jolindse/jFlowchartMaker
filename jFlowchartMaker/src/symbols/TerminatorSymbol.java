@@ -1,9 +1,10 @@
 package symbols;
 
 import gui.AppWindow;
+import interfaces.iObjects;
 import javafx.scene.shape.Ellipse;
 
-public class TerminatorSymbol extends Symbols {
+public class TerminatorSymbol extends Symbols implements iObjects {
 	private Ellipse elipse;
 
 	public TerminatorSymbol (AppWindow listener) {
@@ -41,5 +42,11 @@ public class TerminatorSymbol extends Symbols {
 	@Override
 	double calcWidth() {
 		return width*2;
+	}
+
+	@Override
+    public String getSaveString() {
+		String text = symbolText.getText().replaceAll("/[,\'\"]/","");
+		return "Symbol,Terminator,"+id+","+x+","+y+","+width+","+height+","+text;
 	}
 }

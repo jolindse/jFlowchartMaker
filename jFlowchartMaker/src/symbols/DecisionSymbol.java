@@ -1,15 +1,15 @@
 package symbols;
 
 import gui.AppWindow;
+import interfaces.iObjects;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.geometry.Pos;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.StrokeLineJoin;
 
-public class DecisionSymbol extends Symbols {
+public class DecisionSymbol extends Symbols implements iObjects {
 
 	private Path romb;
 	private DoubleProperty 	startPointX,
@@ -69,9 +69,7 @@ public class DecisionSymbol extends Symbols {
 		romb.strokeProperty().bind(STROKE_COLOR);
 		romb.strokeWidthProperty().bind(STROKE_WIDTH);
 		romb.setStrokeLineJoin(StrokeLineJoin.ROUND);
-		
-		// romb.setStroke(STROKE_COLOR);
-		// romb.setStrokeWidth(STROKE_WIDTH);
+
 		updateSize();
 		this.getChildren().addAll(romb,symbolText);
 
@@ -106,5 +104,11 @@ public class DecisionSymbol extends Symbols {
     double calcWidth() {
         return width;
     }
+
+	@Override
+    public String getSaveString() {
+		String text = symbolText.getText().replaceAll("/[,\'\"]/","");
+		return "Symbol,Decision,"+id+","+x+","+y+","+width+","+height+","+text;
+	}
 
 }

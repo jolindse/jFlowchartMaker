@@ -1,9 +1,10 @@
 package symbols;
 
 import gui.AppWindow;
+import interfaces.iObjects;
 import javafx.scene.shape.Rectangle;
 
-public class ProcessSymbol extends Symbols {
+public class ProcessSymbol extends Symbols implements iObjects {
 
 	private Rectangle square;
 
@@ -36,12 +37,17 @@ public class ProcessSymbol extends Symbols {
 
 	@Override
 	double calcHeight() {
-		return height;
+		return square.getHeight();
 	}
 
 	@Override
 	double calcWidth() {
+        return square.getWidth();
+	}
 
-        return width;
+	@Override
+    public String getSaveString() {
+		String text = symbolText.getText().replaceAll("/[,\'\"]/","");
+		return "Symbol,Process,"+id+","+x+","+y+","+width+","+height+","+text;
 	}
 }

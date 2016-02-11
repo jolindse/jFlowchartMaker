@@ -1,9 +1,9 @@
 package interfaces;
 
-import java.util.List;
-
 import symbols.Connectors;
 import symbols.Symbols;
+
+import java.util.List;
 
 public interface iSelections {
 	void selectElement(Symbols currSymbol);
