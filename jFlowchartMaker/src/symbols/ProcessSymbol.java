@@ -1,6 +1,7 @@
 package symbols;
 
 import gui.AppWindow;
+import interfaces.iControll;
 import interfaces.iObjects;
 import javafx.scene.shape.Rectangle;
 
@@ -8,7 +9,7 @@ public class ProcessSymbol extends Symbols implements iObjects {
 
 	private Rectangle square;
 
-	public ProcessSymbol(AppWindow listener) {
+	public ProcessSymbol(iControll listener) {
 		super(listener);
 
 		square = new Rectangle(100, 50);

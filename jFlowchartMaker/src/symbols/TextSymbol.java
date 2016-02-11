@@ -1,12 +1,13 @@
 package symbols;
 
 import gui.AppWindow;
+import interfaces.iControll;
 import interfaces.iObjects;
 import javafx.scene.text.Font;
 
 public class TextSymbol extends Symbols implements iObjects {
 
-	public TextSymbol(AppWindow eh) {
+	public TextSymbol(iControll eh) {
 		super(eh);
 		connectable = false;
 		

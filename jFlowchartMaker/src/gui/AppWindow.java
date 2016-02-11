@@ -1,9 +1,7 @@
 package gui;
 
-import interfaces.iConnectors;
-import interfaces.iElements;
-import interfaces.iSelections;
-import interfaces.iSymbols;
+import interfaces.iControll;
+import interfaces.iObjects;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -13,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
 import javafx.stage.Stage;
 import symbols.*;
@@ -20,262 +19,247 @@ import symbols.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppWindow implements iElements, iSymbols, iConnectors, iSelections {
+public class AppWindow {
 
-	private BorderPane root;
-	private ContentArea content;
-	private ControllPane controllpane;
-	private MainMenu menubar;
+    private BorderPane root;
+    private ContentArea content;
+    private ControllPane controllpane;
+    private MainMenu menubar;
 
-	private List<Symbols> selectedElements;
-	private List<Connectors> selectedConnectors;
-	private ObservableList<Node> elements;
-	private boolean symbolSelected;
-	private String symbolType;
-	private Group currSymbol;
+    private iControll controll;
 
-	public AppWindow(Stage stage) {
-		root = new BorderPane();
-		Scene scene = new Scene(root, 600, 800);
+    private List<Symbols> selectedElements;
+    private List<Connectors> selectedConnectors;
+    private ObservableList<Node> elements;
+    private boolean isSymbolSelected;
 
-		selectedElements = new ArrayList<>();
-		selectedConnectors = new ArrayList<>();
+    private String symbolType;
+    private Group currSymbol;
 
-		elements = FXCollections.observableArrayList();
+    public AppWindow(Stage stage, iControll controll) {
+        this.controll = controll;
+        root = new BorderPane();
+        Scene scene = new Scene(root, 600, 800);
 
-		stage.setScene(scene);
-		stage.setMinHeight(800);
-		stage.setMinWidth(600);
-		stage.show();
+        selectedElements = new ArrayList<>();
+        selectedConnectors = new ArrayList<>();
 
-		content = new ContentArea(this);
-		controllpane = new ControllPane(this);
-		menubar = new MainMenu(this,controllpane);
+        elements = FXCollections.observableArrayList();
 
-		/*
-		 * VBox topBox = new VBox(); topBox.getChildren().addAll(menubar,
-		 * controllpane);
-		 */
+        stage.setScene(scene);
+        stage.setMinHeight(800);
+        stage.setMinWidth(600);
+        stage.show();
 
-		root.setTop(menubar);
-		root.setCenter(content);
-		root.setBottom(controllpane);
+        content = new ContentArea(controll);
+        controllpane = new ControllPane(controll);
+        menubar = new MainMenu(controll);
 
-		content.addEventHandler(MouseEvent.ANY, (e) -> {
-			if (symbolSelected) {
-				if (e.getEventType().equals(MouseEvent.MOUSE_MOVED)) {
-					currSymbol.toFront();
-					double x = currSymbol.getLayoutX() + e.getX();
-					double y = currSymbol.getLayoutY() + e.getY();
-					currSymbol.setTranslateX(x);
-					currSymbol.setTranslateY(y);
-				}
+        root.setTop(menubar);
+        root.setCenter(content);
+        root.setBottom(controllpane);
 
-				if (e.getEventType().equals(MouseEvent.MOUSE_ENTERED)) {
-					elements.add(currSymbol);
-				}
-				if (e.getEventType().equals(MouseEvent.MOUSE_EXITED)) {
-					elements.remove(currSymbol);
-				}
-			}
-		});
+        content.addEventHandler(MouseEvent.ANY, (e) -> {
+            if(isSymbolSelected) {
+                if (e.getEventType().equals(MouseEvent.MOUSE_CLICKED)) {
+                    addElement(e);
 
-		elements.addListener(new ListChangeListener<Node>() {
-			@Override
-			public void onChanged(javafx.collections.ListChangeListener.Change<? extends Node> c) {
-				content.getChildren().clear();
-				content.getChildren().addAll(elements);
-			}
-		});
+                }
+                if (e.getEventType().equals(MouseEvent.MOUSE_MOVED)) {
+                    currSymbol.toFront();
+                    double x = currSymbol.getLayoutX() + e.getX();
+                    double y = currSymbol.getLayoutY() + e.getY();
+                    currSymbol.setTranslateX(x);
+                    currSymbol.setTranslateY(y);
+                }
 
-		scene.setOnKeyPressed((e) -> {
-			if (e.getCode() == KeyCode.DELETE) {
-				for (Symbols currElement : selectedElements) {
-					for (Connectors currConn : currElement.getConnections()) {
-						currConn.remove(currElement);
-						elements.remove(currConn.getPathReference());
-						elements.remove(currConn);
-					}
-					elements.remove(currElement);
-				}
-				clearSelected();
-			}
-		});
+                if (e.getEventType().equals(MouseEvent.MOUSE_ENTERED)) {
+                    elements.add(currSymbol);
+                }
+                if (e.getEventType().equals(MouseEvent.MOUSE_EXITED)) {
+                    elements.remove(currSymbol);
+                }
+            }
+        });
 
-	}
+        elements.addListener(new ListChangeListener<Node>() {
+            @Override
+            public void onChanged(javafx.collections.ListChangeListener.Change<? extends Node> c) {
+                content.getChildren().clear();
+                content.getChildren().addAll(elements);
+            }
+        });
 
-	// LISTENERS
 
-	// iELEMENTS methods
+        scene.setOnKeyPressed((e) -> {
+            if (e.getCode() == KeyCode.DELETE) {
+                for (Symbols currElement : selectedElements) {
+                    for (Connectors currConn : currElement.getConnections()) {
+                        currConn.remove(currElement);
+                        elements.remove(currConn.getPathReference());
+                        elements.remove(currConn);
+                    }
+                    elements.remove(currElement);
+                }
+                controll.clearAll();
+            }
+        });
 
-	@Override
-	public void addElement(MouseEvent e) {
-		if (symbolSelected) {
-			Symbols currElement = null;
-			double x = content.getTranslateX() + e.getX();
-			double y = content.getTranslateY() + e.getY();
-			switch (symbolType) {
-			case "process":
-				currElement = new ProcessSymbol(this);
-				break;
-			case "decision":
-				currElement = new DecisionSymbol(this);
-				break;
-			case "terminator":
-				currElement = new TerminatorSymbol(this);
-				break;
-			case "text":
-				currElement = new TextSymbol(this);
-				break;
-			}
-			if (currElement != null) {
-				currElement.setTranslateX(x);
-				currElement.setTranslateY(y);
-				elements.add(currElement);
-			}
-			controllpane.clearSelection();
+    }
 
-		} else {
-			clearSelected();
-		}
-	}
+    // SETTERS FOR CONTROLLER TO UPDATE VIEW
 
-	@Override
-	public void removeElement(Symbols currElement) {
-		List<Connectors> currConnections = currElement.getConnections();
-		for (Connectors currConn : currConnections) {
-			currConn.remove(currElement);
-		}
-		elements.remove(currElement);
-	}
+    public void setSelectedElements(List<Symbols> selected) {
+        selectedElements = selected;
+    }
 
-	@Override
-	public void moveElement(MouseEvent e) {
-		if (e.isPrimaryButtonDown()) {
-			Symbols currElement = (Symbols) e.getSource();
-			double x = currElement.getTranslateX() + e.getX();
-			double y = currElement.getTranslateY() + e.getY();
+    public void setSelectedConnectors(List<Connectors> selected) {
+        selectedConnectors = selected;
+    }
 
-			currElement.setTranslateX(x);
-			currElement.setTranslateY(y);
-			if (currElement.isConnected()) {
-				List<Connectors> currConnections = currElement.getConnections();
-				for (Connectors currConn : currConnections) {
-					currConn.update();
-				}
-			}
-			currElement.toFront();
-		}
-	}
+    public void setSymbolType(String type) {
+        symbolType = type;
+    }
 
-	@Override
-	public void setElementColor(String type) {
-		if (selectedElements.size() > 0) {
-			for (Symbols currElement : selectedElements) {
-				switch (type) {
-				case "fill":
-					currElement.setFillColor(controllpane.getColor());
-					break;
-				case "stroke":
-					currElement.setStrokeColor(controllpane.getColor());
-					break;
-				}
-			}
-		}
-	}
+    public void setCurrentSymbol(Group symbol) {
+        currSymbol = symbol;
+    }
 
-	// iSELECTIONS methods
+    public void getCurrentSymbol(){
+        currSymbol = controllpane.getSymbolForMouse(symbolType);
+    }
 
-	@Override
-	public void selectElement(Symbols currElement) {
-		currElement.setSelected();
-		selectedElements.add(currElement);
-	}
+    public void setSymbolSelected(boolean symbool) {
+        isSymbolSelected = symbool;
+    }
 
-	@Override
-	public void selectConnector(Connectors currConnector) {
-		currConnector.setSelected();
-		selectedConnectors.add(currConnector);
-	}
+    // Element controll methods
 
-	@Override
-	public void clearSelected() {
-		for (Symbols currElement : selectedElements) {
-			currElement.setDeselected();
-		}
-		selectedElements.clear();
-		for (Connectors currConn : selectedConnectors) {
-			currConn.setDeselected();
-		}
-		selectedConnectors.clear();
+    public void addElement(MouseEvent e) {
+        if (isSymbolSelected) {
+            Symbols currElement = null;
+            double x = content.getTranslateX() + e.getX();
+            double y = content.getTranslateY() + e.getY();
+            switch (symbolType) {
+                case "process":
+                    currElement = new ProcessSymbol(controll);
+                    break;
+                case "decision":
+                    currElement = new DecisionSymbol(controll);
+                    break;
+                case "terminator":
+                    currElement = new TerminatorSymbol(controll);
+                    break;
+                case "text":
+                    currElement = new TextSymbol(controll);
+                    break;
+            }
+            if (currElement != null) {
+                currElement.setTranslateX(x);
+                currElement.setTranslateY(y);
+                elements.add(currElement);
+            }
+            controllpane.clearSelection();
+            controll.clearAll();
 
-	}
+        } else {
+            controll.clearAll();
+        }
+        deselectSymbols();
+    }
 
-	@Override
-	public void clearAll() {
-		elements.clear();
-	}
+    public void removeElement(iObjects currElement) {
+        if (currElement instanceof Symbols) {
+            List<Connectors> currConnections = ((Symbols) currElement).getConnections();
+            for (Connectors currConn : currConnections) {
+                currConn.remove((Symbols) currElement);
+            }
+        } else if (currElement instanceof Connectors) {
+            // remove only connector
+        }
+        elements.remove(currElement);
 
-	@Override
-	public List<Symbols> getSelectedElement() {
-		return selectedElements;
-	}
+    }
 
-	// iSYMBOLS methods
+    public void moveElement(MouseEvent e) {
+        if (e.isPrimaryButtonDown()) {
+            if (e.getSource() instanceof Symbols) {
+                Symbols currElement = (Symbols) e.getSource();
+                double x = currElement.getTranslateX() + e.getX();
+                double y = currElement.getTranslateY() + e.getY();
 
-	@Override
-	public void selectSymbol(String type) {
-		symbolType = type;
-		currSymbol = controllpane.getSymbolForMouse(type);
-		currSymbol.setOpacity(0.3);
-		symbolSelected = true;
-	}
+                currElement.setTranslateX(x);
+                currElement.setTranslateY(y);
+                if (currElement.isConnected()) {
+                    List<Connectors> currConnections = currElement.getConnections();
+                    for (Connectors currConn : currConnections) {
+                        currConn.update();
+                    }
+                }
+                currElement.toFront();
+            }
+        }
+    }
 
-	@Override
-	public void deselectSymbol() {
-		symbolType = null;
-		symbolSelected = false;
-		elements.remove(currSymbol);
-		currSymbol = null;
-	}
+    public void setElementColor(String type) {
+        Color col = controllpane.getColor();
+        if (selectedElements.size() > 0) {
+            for (Symbols currElement : selectedElements) {
+                switch (type) {
+                    case "fill":
+                        currElement.setFillColor(col);
+                        break;
+                    case "stroke":
+                        currElement.setStrokeColor(col);
+                        break;
+                }
+            }
+        }
+    }
 
-	// iCONNECTORS methods
 
-	@Override
-	public void addConnector() {
+    public void addConnector() {
 		/*
 		 * Itterate through list and add for each start and end.
 		 */
 
-		int numberOfElements = selectedElements.size();
-		int index = 0;
+        int numberOfElements = selectedElements.size();
+        int index = 0;
 
-		if (numberOfElements > 1) {
+        if (numberOfElements > 1) {
 
-			while (index < numberOfElements - 1) {
-				Symbols start = selectedElements.get(index);
-				Symbols end = selectedElements.get(index + 1);
+            while (index < numberOfElements - 1) {
+                System.out.println("In connector loop number of elements: "+numberOfElements); // TEST
+                Symbols start = selectedElements.get(index);
+                Symbols end = selectedElements.get(index + 1);
 
-				if (start.isConnectable() && end.isConnectable()) {
-					ArrowSymbol connector = new ArrowSymbol(start, end);
-					start.setConnected(connector);
-					end.setConnected(connector);
-					Path arrow = connector.getArrow();
-					connector.setPathReference(arrow);
-					elements.add(arrow);
-				}
-				index++;
-			}
-		} else {
-			// NOT ENOUGH OBJECTS ERROR
-		}
+                System.out.println("Start: "+start+" End: "+end); // TEST
 
-	}
+                if (start.isConnectable() && end.isConnectable()) {
+                    ArrowSymbol connector = new ArrowSymbol(start, end);
+                    start.setConnected(connector);
+                    end.setConnected(connector);
+                    Path arrow = connector.getArrow();
+                    connector.setPathReference(arrow);
+                    System.out.println("Arrow: "+arrow); // TEST
+                    elements.add(arrow);
+                }
+                index++;
+            }
+        } else {
+            // NOT ENOUGH OBJECTS ERROR
+        }
+        deselectSymbols();
+    }
 
-	@Override
-	public void redmoveConnector(Connectors currConn) {
+    private void deselectSymbols() {
+        for (Symbols currElement: selectedElements){
+            currElement.setDeselected();
+        }
+    }
 
-		elements.remove(currConn);
-	}
+    public void removeAll() {
+        elements.clear();
+    }
 
 }

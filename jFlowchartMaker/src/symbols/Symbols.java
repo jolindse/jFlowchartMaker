@@ -1,8 +1,7 @@
 package symbols;
 
-import gui.AppWindow;
-import interfaces.iElements;
-import interfaces.iSelections;
+import interfaces.iControll;
+import interfaces.iObjects;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -21,8 +20,7 @@ import java.util.Optional;
 
 public abstract class Symbols extends StackPane {
 
-	protected iSelections listener;
-	protected iElements elListener;
+	protected iControll controll;
 	protected boolean selected = false;
 	protected boolean connected = false;
 	protected boolean connectable = true;
@@ -38,9 +36,8 @@ public abstract class Symbols extends StackPane {
 	protected double width, height, x, y;
 	private static int idCounter = 0;
 	
-	public Symbols(AppWindow eh) {
-		listener = eh;
-		elListener = eh;
+	public Symbols(iControll eh) {
+		controll = eh;
 
 		setPadding(new Insets(0, 0, 0, 0));
 
@@ -61,18 +58,19 @@ public abstract class Symbols extends StackPane {
 
 		this.addEventHandler(MouseEvent.ANY, (e) -> {
 			if (e.getEventType().equals(MouseEvent.MOUSE_DRAGGED)) {
-				elListener.moveElement(e);
+				controll.moveElement(e);
 			}
 
 			if (e.getEventType().equals(MouseEvent.MOUSE_CLICKED)) {
 				Symbols currSymbol = (Symbols) e.getSource();
 				if (e.isShiftDown()) {
-					listener.selectElement(currSymbol);
+					controll.addSelectedElement((iObjects)currSymbol);
 					setSelected();
 					e.consume();
 					// LÄGG IN DUBBELKLICK -> ÄNDRA TEXT
 				} else {
-					listener.selectElement(currSymbol);
+					controll.clearSelectedElements();
+					controll.addSelectedElement((iObjects) currSymbol);
 					setSelected();
 					e.consume();
 				}

@@ -2,10 +2,7 @@ package gui;
 
 
 
-import interfaces.iConnectors;
-import interfaces.iElements;
-import interfaces.iSelections;
-import interfaces.iSymbols;
+import interfaces.iControll;
 import javafx.application.Platform;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -15,20 +12,18 @@ import javafx.scene.control.SeparatorMenuItem;
 public class MainMenu extends MenuBar {
 
 	private Menu file, symbols, transformation;
-	private iSelections selListner;
-	private iElements elListener;
-	private iSymbols symListener;
-	private iConnectors connListener;
+
+	private iControll controll;
+
 	
-	public MainMenu(AppWindow eh, ControllPane toolbar){
-		connListener = eh;
-		selListner = eh;
-		elListener = eh;
+	public MainMenu(iControll eh){
+
+		controll = eh;
 		file = new Menu("File");
 		
 		MenuItem clear = new MenuItem("Clear");
 		clear.setOnAction((e) ->{
-			selListner.clearAll();
+			controll.removeAll();
 		});
 		MenuItem save = new MenuItem("Save...");
 		MenuItem load = new MenuItem("Load...");
@@ -42,23 +37,23 @@ public class MainMenu extends MenuBar {
 		symbols = new Menu("Symbols");
 		MenuItem process = new MenuItem("Process");
 		process.setOnAction((e)-> {
-			toolbar.setSelected("process");
+			controll.setSymbolSelected("process");
 		});
 		MenuItem terminator = new MenuItem("Terminator");
 		terminator.setOnAction((e) ->{
-			toolbar.setSelected("terminator");
+			controll.setSymbolSelected("terminator");
 		});
 		MenuItem decision = new MenuItem("Decision");
 		decision.setOnAction((e) ->{
-			toolbar.setSelected("decision");
+			controll.setSymbolSelected("decision");
 		});
 		MenuItem text = new MenuItem("Text");
 		text.setOnAction((e) ->{
-			toolbar.setSelected("decision");
+			controll.setSymbolSelected("decision");
 		});
 		MenuItem connector = new MenuItem("Connection");
 		connector.setOnAction((e)->{
-			connListener.addConnector();
+			controll.addConnector();
 		});
 		symbols.getItems().addAll(process,terminator,decision,text,getSeparator(),connector);
 		
@@ -66,11 +61,11 @@ public class MainMenu extends MenuBar {
 		MenuItem changeText = new MenuItem("Change text...");
 		MenuItem changeFillColor = new MenuItem("Change fill color");
 		changeFillColor.setOnAction((e) ->{
-			elListener.setElementColor("fill");
+			controll.setElementColor("fill");
 		});
 		MenuItem changeStrokeColor = new MenuItem("Change border color");
 		changeStrokeColor.setOnAction((e) ->{
-			elListener.setElementColor("stroke");
+			controll.setElementColor("stroke");
 		});
 		MenuItem deleteElement = new MenuItem("Remove symbol(s)");
 		transformation.getItems().addAll(changeText,changeFillColor,changeStrokeColor,deleteElement);

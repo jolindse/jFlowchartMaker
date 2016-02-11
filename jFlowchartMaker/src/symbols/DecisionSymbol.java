@@ -1,6 +1,7 @@
 package symbols;
 
 import gui.AppWindow;
+import interfaces.iControll;
 import interfaces.iObjects;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -26,7 +27,7 @@ public class DecisionSymbol extends Symbols implements iObjects {
 					leftLine,
 					topLine;
 
-	public DecisionSymbol(AppWindow listener) {
+	public DecisionSymbol(iControll listener) {
 		super(listener);
 		
 		startPointX = new SimpleDoubleProperty(25);

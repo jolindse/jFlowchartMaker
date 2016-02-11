@@ -1,10 +1,7 @@
 package gui;
 
-import interfaces.iConnectors;
-import interfaces.iElements;
-import interfaces.iSymbols;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import interfaces.iControll;
+import javafx.beans.property.*;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.control.ColorPicker;
@@ -23,42 +20,41 @@ import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
 
 public class ControllPane extends HBox {
+
 	private ObjectProperty<Color> currColor;
-	private iSymbols listener;
-	private iConnectors conListener;
-	private iElements elListener;
+
+	private iControll controll;
 	private Rectangle process, decision;
 	private Ellipse terminator;
-	private Effect effect;
 	private Group arrow, text;
 	private ColorPicker picker;
 
-	private boolean isSelected = false;
 
-	public ControllPane(AppWindow ev) {
-		listener = ev;
-		conListener = ev;
-		elListener = ev;
+	public ControllPane(iControll eh) {
+		controll = eh;
 
 		currColor = new SimpleObjectProperty<>(Color.WHITE);
 
 		setSpacing(10);
 		setPadding(new Insets(10, 10, 10, 10));
 
+
+
 		this.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
-			listener.deselectSymbol();
+			controll.removeSymbolSelected();
 			clearSelection();
-			isSelected = false;
 		});
 
-		effect = null;
+
 
 		process = new Rectangle(30, 20);
+		process.setId("process");
 		process.setFill(Color.WHITE);
 		process.setStroke(Color.BLACK);
 		process.setStrokeWidth(3);
-		process.setEffect(effect);
+		process.setEffect(null);
 		process.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
+			clearSelection();
 			setSelected("process");
 			process.setEffect(new DropShadow());
 			e.consume();
@@ -69,8 +65,9 @@ public class ControllPane extends HBox {
 		decision.setFill(Color.WHITE);
 		decision.setStroke(Color.BLACK);
 		decision.setStrokeWidth(3);
-		decision.setEffect(effect);
+		decision.setEffect(null);
 		decision.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
+			clearSelection();
 			setSelected("decision");
 			decision.setEffect(new DropShadow());
 			e.consume();
@@ -80,8 +77,9 @@ public class ControllPane extends HBox {
 		terminator.setFill(Color.WHITE);
 		terminator.setStroke(Color.BLACK);
 		terminator.setStrokeWidth(3);
-		terminator.setEffect(effect);
+		terminator.setEffect(null);
 		terminator.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
+			clearSelection();
 			setSelected("terminator");
 			terminator.setEffect(new DropShadow());
 			e.consume();
@@ -93,7 +91,9 @@ public class ControllPane extends HBox {
 		abc.setFont(Font.font("Serif", 24));
 		abc.setFill(Color.BLACK);
 		text.getChildren().add(abc);
+		text.setEffect(null);
 		text.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
+			clearSelection();
 			setSelected("text");
 			text.setEffect(new DropShadow());
 			e.consume();
@@ -111,8 +111,13 @@ public class ControllPane extends HBox {
 		Line line = new Line(15, 7.5, 25, 17.5);
 		arrow.getChildren().addAll(topRec, bottomRec, line);
 		arrow.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
-			conListener.addConnector();
+			controll.addConnector();
 			e.consume();
+		});
+
+		picker = new ColorPicker();
+		picker.setOnAction((e) -> {
+			currColor.set(picker.getValue());
 		});
 
 		Region spacer = new Region();
@@ -124,7 +129,7 @@ public class ControllPane extends HBox {
 		changeFillColor.setStroke(Color.BLACK);
 		changeFillColor.setStrokeWidth(3);
 		changeFillColor.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
-			elListener.setElementColor("fill");
+			controll.setElementColor("fill");
 			e.consume();
 		});
 
@@ -133,14 +138,10 @@ public class ControllPane extends HBox {
 		changeBorderColor.strokeProperty().bind(currColor);
 		changeBorderColor.setStrokeWidth(3);
 		changeBorderColor.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) -> {
-			elListener.setElementColor("stroke");
+			controll.setElementColor("stroke");
 			e.consume();
 		});
 
-		picker = new ColorPicker();
-		picker.setOnAction((e) -> {
-			currColor.set(picker.getValue());
-		});
 
 		this.getChildren().addAll(process, decision, terminator, text, arrow, spacer, changeFillColor,
 				changeBorderColor, picker);
@@ -189,42 +190,38 @@ public class ControllPane extends HBox {
 		return currShape;
 	}
 
-	public Color getColor() {
-		return currColor.getValue();
+	public void setSelected(String type) {
+			controll.setSymbolSelected(type);
 	}
+
+	public void clearSelection() {
+		process.setEffect(null);
+		decision.setEffect(null);
+		terminator.setEffect(null);
+		text.setEffect(null);
+		}
 
 	public Group getSymbolForMouse(String type) {
 		Group currSymbol = new Group();
 		switch (type) {
-		case "process":
-			currSymbol = getRectangle();
-			break;
-		case "decision":
-			currSymbol = getRomb();
-			break;
-		case "terminator":
-			currSymbol = getEllipse();
-			break;
-		case "text":
-			currSymbol = getTextSymbol();
-			break;
+			case "process":
+				currSymbol = getRectangle();
+				break;
+			case "decision":
+				currSymbol = getRomb();
+				break;
+			case "terminator":
+				currSymbol = getEllipse();
+				break;
+			case "text":
+				currSymbol = getTextSymbol();
+				break;
 		}
+		currSymbol.setOpacity(0.3);
 		return currSymbol;
 	}
 
-	public void setSelected(String type) {
-		clearSelection();
-		listener.selectSymbol(type);
-		isSelected = true;
+	public Color getColor(){
+		return picker.getValue();
 	}
-
-	public void clearSelection() {
-		listener.deselectSymbol();
-		process.setEffect(effect);
-		decision.setEffect(effect);
-		terminator.setEffect(effect);
-		text.setEffect(effect);
-		isSelected = false;
-	}
-
 }

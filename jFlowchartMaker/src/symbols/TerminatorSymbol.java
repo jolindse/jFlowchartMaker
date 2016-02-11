@@ -1,13 +1,14 @@
 package symbols;
 
 import gui.AppWindow;
+import interfaces.iControll;
 import interfaces.iObjects;
 import javafx.scene.shape.Ellipse;
 
 public class TerminatorSymbol extends Symbols implements iObjects {
 	private Ellipse elipse;
 
-	public TerminatorSymbol (AppWindow listener) {
+	public TerminatorSymbol (iControll listener) {
 		super(listener);
 		elipse = new Ellipse(40,20);
 		elipse.fillProperty().bind(FILL_COLOR);
