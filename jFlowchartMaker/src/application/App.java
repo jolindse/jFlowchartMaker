@@ -20,6 +20,8 @@ import javafx.stage.Stage;
 import symbols.Connectors;
 import symbols.Symbols;
 
+
+
 public class App extends Application implements iControll {
 
 	private AppWindow view;
@@ -44,7 +46,9 @@ public class App extends Application implements iControll {
 
 
 	private void controllerInit() {
-
+        /**
+         * Init routines to set up controller functionality.
+         */
         symbolSelectedType = new SimpleStringProperty("");
         //selected = new SimpleBooleanProperty(false);
         symbolSelected = new SimpleBooleanProperty(false);
