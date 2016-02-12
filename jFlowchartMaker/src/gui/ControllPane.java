@@ -2,6 +2,8 @@ package gui;
 
 import interfaces.iControll;
 import javafx.beans.property.*;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.control.ColorPicker;
@@ -19,6 +21,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
 
+/**
+ * Controll/Toolbar panel.
+ */
 public class ControllPane extends HBox {
 
 	private ObjectProperty<Color> currColor;
@@ -30,10 +35,20 @@ public class ControllPane extends HBox {
 	private ColorPicker picker;
 
 
+	/**
+	 * Draws selectable shapes on toolbar and makes them selectable.
+	 * @param eh
+     */
 	public ControllPane(iControll eh) {
 		controll = eh;
 
 		currColor = new SimpleObjectProperty<>(Color.WHITE);
+		currColor.addListener(new ChangeListener<Color>() {
+			@Override
+			public void changed(ObservableValue<? extends Color> observable, Color oldValue, Color newValue) {
+				controll.setCurrentColor(currColor.get());
+			}
+		});
 
 		setSpacing(10);
 		setPadding(new Insets(10, 10, 10, 10));
@@ -147,53 +162,17 @@ public class ControllPane extends HBox {
 				changeBorderColor, picker);
 	}
 
-	// MAKE SHAPES METHODS
-
-	private Group getRectangle() {
-		Group currShape = new Group();
-		Rectangle currSymbol = new Rectangle(60, 40);
-		currSymbol.setFill(Color.WHITE);
-		currSymbol.setStroke(Color.BLACK);
-		currSymbol.setStrokeWidth(3);
-		currShape.getChildren().add(currSymbol);
-		return currShape;
-	}
-
-	private Group getRomb() {
-		Group currShape = new Group();
-		Rectangle currSymbol = new Rectangle(40, 40);
-		currSymbol.setRotate(45);
-		currSymbol.setFill(Color.WHITE);
-		currSymbol.setStroke(Color.BLACK);
-		currSymbol.setStrokeWidth(3);
-		currShape.getChildren().add(currSymbol);
-		return currShape;
-	}
-
-	private Group getEllipse() {
-		Group currShape = new Group();
-		Ellipse currSymbol = new Ellipse(40, 20);
-		currSymbol.setFill(Color.WHITE);
-		currSymbol.setStroke(Color.BLACK);
-		currSymbol.setStrokeWidth(3);
-		currShape.getChildren().add(currSymbol);
-		return currShape;
-	}
-
-	private Group getTextSymbol() {
-		Group currShape = new Group();
-		Text currSymbol = new Text("Abc");
-		currSymbol.setFontSmoothingType(FontSmoothingType.LCD);
-		currSymbol.setFont(Font.font("Serif", 24));
-		currSymbol.setFill(Color.BLACK);
-		currShape.getChildren().add(currSymbol);
-		return currShape;
-	}
-
+	/**
+	 * Sets a symbol selected
+	 * @param type
+     */
 	public void setSelected(String type) {
 			controll.setSymbolSelected(type);
 	}
 
+	/**
+	 * Clear the selection
+	 */
 	public void clearSelection() {
 		process.setEffect(null);
 		decision.setEffect(null);
@@ -201,27 +180,4 @@ public class ControllPane extends HBox {
 		text.setEffect(null);
 		}
 
-	public Group getSymbolForMouse(String type) {
-		Group currSymbol = new Group();
-		switch (type) {
-			case "process":
-				currSymbol = getRectangle();
-				break;
-			case "decision":
-				currSymbol = getRomb();
-				break;
-			case "terminator":
-				currSymbol = getEllipse();
-				break;
-			case "text":
-				currSymbol = getTextSymbol();
-				break;
-		}
-		currSymbol.setOpacity(0.3);
-		return currSymbol;
-	}
-
-	public Color getColor(){
-		return picker.getValue();
-	}
 }

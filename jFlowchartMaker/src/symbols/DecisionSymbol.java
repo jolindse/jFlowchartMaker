@@ -10,6 +10,9 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.StrokeLineJoin;
 
+/**
+ * Decision symbol. Autosized depending on text size.
+ */
 public class DecisionSymbol extends Symbols implements iObjects {
 
 	private Path romb;

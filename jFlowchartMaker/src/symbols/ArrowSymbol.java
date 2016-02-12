@@ -1,16 +1,21 @@
 package symbols;
 
+import interfaces.iControll;
 import interfaces.iObjects;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 
+/**
+ * The connector symbol
+ */
 public class ArrowSymbol extends Connectors implements iObjects {
 
     private Path arrow;
 
-    public ArrowSymbol(Symbols startSymbol, Symbols endSymbol) {
-        super(startSymbol, endSymbol);
+    public ArrowSymbol(Symbols startSymbol, Symbols endSymbol, iControll eh) {
+        super(startSymbol, endSymbol, eh);
 
         arrow = new Path();
 
@@ -38,10 +43,13 @@ public class ArrowSymbol extends Connectors implements iObjects {
         wingTwo.xProperty().bind(wingTwoX);
         wingTwo.yProperty().bind(wingTwoY);
 
-        arrow.getElements().addAll(start, end, wingOne, back, wingTwo);
+        arrow.getElements().addAll(start, end);
         arrow.setStroke(STROKE_COLOR);
         arrow.setStrokeWidth(STROKEWIDTH);
 
+        arrow.addEventHandler(MouseEvent.MOUSE_CLICKED, (e) ->{
+                setSelected();
+        });
     }
 
     @Override

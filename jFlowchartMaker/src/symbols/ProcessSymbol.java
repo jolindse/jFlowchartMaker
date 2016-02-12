@@ -5,6 +5,9 @@ import interfaces.iControll;
 import interfaces.iObjects;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * Process symbol. Auto sized depending on text size.
+ */
 public class ProcessSymbol extends Symbols implements iObjects {
 
 	private Rectangle square;

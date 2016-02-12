@@ -1,7 +1,5 @@
 package gui;
 
-
-
 import interfaces.iControll;
 import javafx.application.Platform;
 import javafx.scene.control.Menu;
@@ -9,13 +7,20 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 
+/**
+	Menu class
+ */
+
 public class MainMenu extends MenuBar {
 
 	private Menu file, symbols, transformation;
 
 	private iControll controll;
 
-	
+	/**
+	 * Adds all items to menus.
+	 * @param eh
+     */
 	public MainMenu(iControll eh){
 
 		controll = eh;
@@ -26,8 +31,11 @@ public class MainMenu extends MenuBar {
 			controll.removeAll();
 		});
 		MenuItem save = new MenuItem("Save...");
+		save.setDisable(true);
 		MenuItem load = new MenuItem("Load...");
+		load.setDisable(true);
 		MenuItem export = new MenuItem("Export to PDF");
+		export.setDisable(true);
 		MenuItem exit = new MenuItem("Exit");
 		exit.setOnAction((e) -> {
 			Platform.exit();
@@ -73,6 +81,10 @@ public class MainMenu extends MenuBar {
 		getMenus().addAll(file,symbols,transformation);
 	}
 
+	/**
+	 * Returns an anonymous separator for use in menus.
+	 * @return
+     */
 	private MenuItem getSeparator(){
 		MenuItem separator = new SeparatorMenuItem();
 		return separator;

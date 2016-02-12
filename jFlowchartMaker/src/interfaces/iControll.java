@@ -5,6 +5,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import symbols.Symbols;
 
+/**
+ * Interface that relays all selections and commands through "controller" to view.
+ */
 public interface iControll {
 
 	void setSymbolSelected(String type);
@@ -18,8 +21,8 @@ public interface iControll {
 
 
     void moveElement(MouseEvent e);
+    void setCurrentColor(Color col);
     void setElementColor(String type);
-    void addElement();
     void addConnector();
     void removeElement();
     void removeAll();

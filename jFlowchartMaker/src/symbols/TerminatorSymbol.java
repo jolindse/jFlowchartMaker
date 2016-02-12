@@ -5,6 +5,9 @@ import interfaces.iControll;
 import interfaces.iObjects;
 import javafx.scene.shape.Ellipse;
 
+/**
+ * Terminator symbol. Auto sized depending on text size.
+ */
 public class TerminatorSymbol extends Symbols implements iObjects {
 	private Ellipse elipse;
 

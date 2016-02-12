@@ -12,13 +12,21 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Path;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontSmoothingType;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import symbols.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  Main gui-class
+ */
 public class AppWindow {
 
     private BorderPane root;
@@ -36,6 +44,11 @@ public class AppWindow {
     private String symbolType;
     private Group currSymbol;
 
+    /**
+     * Gui-start class. Sets up gui and initializes different panels in view.
+     * @param stage
+     * @param controll
+     */
     public AppWindow(Stage stage, iControll controll) {
         this.controll = controll;
         root = new BorderPane();
@@ -107,7 +120,11 @@ public class AppWindow {
 
     }
 
-    // SETTERS FOR CONTROLLER TO UPDATE VIEW
+    /*
+    SETTERS FOR CONTROLLER TO UPDATE VIEW
+    =====================================
+    Methods to handle variables used for gui handling of elements and symbols.
+    */
 
     public void setSelectedElements(List<Symbols> selected) {
         selectedElements = selected;
@@ -119,14 +136,11 @@ public class AppWindow {
 
     public void setSymbolType(String type) {
         symbolType = type;
+        currSymbol = getSymbolForMouse(type);
     }
 
     public void setCurrentSymbol(Group symbol) {
         currSymbol = symbol;
-    }
-
-    public void getCurrentSymbol(){
-        currSymbol = controllpane.getSymbolForMouse(symbolType);
     }
 
     public void setSymbolSelected(boolean symbool) {
@@ -135,6 +149,10 @@ public class AppWindow {
 
     // Element controll methods
 
+    /**
+     * Adds element to content area
+     * @param e
+     */
     public void addElement(MouseEvent e) {
         if (isSymbolSelected) {
             Symbols currElement = null;
@@ -168,6 +186,10 @@ public class AppWindow {
         deselectSymbols();
     }
 
+    /**
+     * Removes an element from content area.
+     * @param currElement
+     */
     public void removeElement(iObjects currElement) {
         if (currElement instanceof Symbols) {
             List<Connectors> currConnections = ((Symbols) currElement).getConnections();
@@ -181,6 +203,10 @@ public class AppWindow {
 
     }
 
+    /**
+     * Moves an element on content area.
+     * @param e
+     */
     public void moveElement(MouseEvent e) {
         if (e.isPrimaryButtonDown()) {
             if (e.getSource() instanceof Symbols) {
@@ -201,8 +227,12 @@ public class AppWindow {
         }
     }
 
-    public void setElementColor(String type) {
-        Color col = controllpane.getColor();
+    /**
+     * Changes element color. Either fill or stroke.
+     * @param type
+     * @param col
+     */
+    public void setElementColor(String type, Color col) {
         if (selectedElements.size() > 0) {
             for (Symbols currElement : selectedElements) {
                 switch (type) {
@@ -217,49 +247,119 @@ public class AppWindow {
         }
     }
 
-
+    /**
+     * Adds connectors between all chosen elements in the order they were chosen.
+     */
     public void addConnector() {
-		/*
-		 * Itterate through list and add for each start and end.
-		 */
-
-        int numberOfElements = selectedElements.size();
+	    int numberOfElements = selectedElements.size();
         int index = 0;
 
         if (numberOfElements > 1) {
 
             while (index < numberOfElements - 1) {
-                System.out.println("In connector loop number of elements: "+numberOfElements); // TEST
                 Symbols start = selectedElements.get(index);
                 Symbols end = selectedElements.get(index + 1);
 
-                System.out.println("Start: "+start+" End: "+end); // TEST
 
                 if (start.isConnectable() && end.isConnectable()) {
-                    ArrowSymbol connector = new ArrowSymbol(start, end);
+                    ArrowSymbol connector = new ArrowSymbol(start, end, controll);
                     start.setConnected(connector);
                     end.setConnected(connector);
                     Path arrow = connector.getArrow();
                     connector.setPathReference(arrow);
-                    System.out.println("Arrow: "+arrow); // TEST
                     elements.add(arrow);
                 }
                 index++;
             }
         } else {
-            // NOT ENOUGH OBJECTS ERROR
+            // "NOT ENOUGH OBJECTS ERROR"-dialog to implement.
         }
         deselectSymbols();
     }
 
+    /**
+     * Unselects all elements
+     */
     private void deselectSymbols() {
         for (Symbols currElement: selectedElements){
             currElement.setDeselected();
         }
     }
 
+    /**
+     * Clear all elements from content area
+     */
     public void removeAll() {
         elements.clear();
     }
 
+    /**
+     * Returns object to display under mouse when symbol is selected.
+     * @param type
+     * @return
+     */
+    private Group getSymbolForMouse(String type) {
+        Group currSymbol = new Group();
+        switch (type) {
+            case "process":
+                currSymbol = getRectangle();
+                break;
+            case "decision":
+                currSymbol = getRomb();
+                break;
+            case "terminator":
+                currSymbol = getEllipse();
+                break;
+            case "text":
+                currSymbol = getTextSymbol();
+                break;
+        }
+        currSymbol.setOpacity(0.3);
+        return currSymbol;
+    }
+
+    /*
+        Methods that returns shapes to use when symbol is selected.
+     */
+
+    private Group getRectangle() {
+        Group currShape = new Group();
+        Rectangle currSymbol = new Rectangle(60, 40);
+        currSymbol.setFill(Color.WHITE);
+        currSymbol.setStroke(Color.BLACK);
+        currSymbol.setStrokeWidth(3);
+        currShape.getChildren().add(currSymbol);
+        return currShape;
+    }
+
+    private Group getRomb() {
+        Group currShape = new Group();
+        Rectangle currSymbol = new Rectangle(40, 40);
+        currSymbol.setRotate(45);
+        currSymbol.setFill(Color.WHITE);
+        currSymbol.setStroke(Color.BLACK);
+        currSymbol.setStrokeWidth(3);
+        currShape.getChildren().add(currSymbol);
+        return currShape;
+    }
+
+    private Group getEllipse() {
+        Group currShape = new Group();
+        Ellipse currSymbol = new Ellipse(40, 20);
+        currSymbol.setFill(Color.WHITE);
+        currSymbol.setStroke(Color.BLACK);
+        currSymbol.setStrokeWidth(3);
+        currShape.getChildren().add(currSymbol);
+        return currShape;
+    }
+
+    private Group getTextSymbol() {
+        Group currShape = new Group();
+        Text currSymbol = new Text("Abc");
+        currSymbol.setFontSmoothingType(FontSmoothingType.LCD);
+        currSymbol.setFont(Font.font("Serif", 24));
+        currSymbol.setFill(Color.BLACK);
+        currShape.getChildren().add(currSymbol);
+        return currShape;
+    }
 }

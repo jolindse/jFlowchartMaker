@@ -5,6 +5,9 @@ import interfaces.iControll;
 import interfaces.iObjects;
 import javafx.scene.text.Font;
 
+/**
+ *  Text symbol. Can not be connected to other elements with connector.
+ */
 public class TextSymbol extends Symbols implements iObjects {
 
 	public TextSymbol(iControll eh) {
@@ -17,17 +20,18 @@ public class TextSymbol extends Symbols implements iObjects {
 
 	@Override
 	void updateSize() {
-		// TODO Auto-generated method stub
-
+		// NO NEED. STUB METHOD
 	}
 
 	@Override
 	double calcHeight() {
+		// NO NEED. STUB METHOD
 		return 0;
 	}
 
 	@Override
 	double calcWidth() {
+		// NO NEED. STUB METHOD
 		return 0;
 	}
 

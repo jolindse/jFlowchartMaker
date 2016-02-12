@@ -21,11 +21,15 @@ import symbols.Connectors;
 import symbols.Symbols;
 
 
-
+/**
+ * Start and "controller" class. Handles commands between all elements of the view and data.
+ */
 public class App extends Application implements iControll {
 
 	private AppWindow view;
     private StringProperty symbolSelectedType;
+    private Color currColor;
+    private Group currSymbol;
 
     private boolean selected;
     private BooleanProperty symbolSelected;
@@ -44,24 +48,27 @@ public class App extends Application implements iControll {
 		launch(args);
 	}
 
-
+    /**
+     * "Controller" init method. Initializes needed variables and add listeners.
+     */
 	private void controllerInit() {
-        /**
-         * Init routines to set up controller functionality.
-         */
+
         symbolSelectedType = new SimpleStringProperty("");
-        //selected = new SimpleBooleanProperty(false);
         symbolSelected = new SimpleBooleanProperty(false);
 
         elementsSelected = FXCollections.observableArrayList();
         connectorsSelected = FXCollections.observableArrayList();
+
+        currColor = Color.WHITE;
 
         // Selection property listeners
 
         symbolSelectedType.addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                view.setSymbolType(symbolSelectedType.get());
+                if (symbolSelectedType.get().length() > 0) {
+                    view.setSymbolType(symbolSelectedType.get());
+                }
             }
         });
 
@@ -90,7 +97,9 @@ public class App extends Application implements iControll {
 
     }
 
-
+    /**
+     * Checks if elements or connectors are selected
+     */
     private void checkSelected() {
         if (elementsSelected.size() > 0) {
             selected = true;
@@ -103,21 +112,30 @@ public class App extends Application implements iControll {
 
     // ELEMENTS SELECTION METHODS
 
+    /**
+     * Clears all selections
+     */
     @Override
     public void clearAll() {
         elementsSelected.clear();
         connectorsSelected.clear();
         symbolSelected.set(false);
-        symbolSelectedType.set(null);
+        symbolSelectedType.set("");
     }
 
+    /**
+     * Sets what symbol to be added from either controllpanel or menu
+     * @param type
+     */
     @Override
     public void setSymbolSelected(String type) {
         symbolSelectedType.set(type);
         symbolSelected.set(true);
-        view.getCurrentSymbol();
     }
 
+    /**
+     * Removes symbol selection
+     */
     @Override
     public void removeSymbolSelected() {
         view.setCurrentSymbol(null);
@@ -125,6 +143,10 @@ public class App extends Application implements iControll {
         symbolSelectedType = null;
     }
 
+    /**
+     * Marks a object that implements iObject as selected and adds it to selectionslist
+     * @param currElement
+     */
     @Override
     public void addSelectedElement(iObjects currElement) {
         if (currElement instanceof Symbols) {
@@ -137,6 +159,10 @@ public class App extends Application implements iControll {
         }
     }
 
+    /**
+     * Removes iObject from selection list
+     * @param currElement
+     */
     @Override
     public void removeSelectedElement(iObjects currElement) {
         if (currElement instanceof Symbols) {
@@ -148,6 +174,9 @@ public class App extends Application implements iControll {
         }
     }
 
+    /**
+     * Clears all selected elements
+     */
     @Override
     public void clearSelectedElements() {
         elementsSelected.clear();
@@ -155,24 +184,40 @@ public class App extends Application implements iControll {
 
     // ELEMENT MANIPULATION METHODS
 
+    /**
+     * Moves a element. Takes MouseEvent as parameter
+     * @param e
+     */
     @Override
     public void moveElement(MouseEvent e) {
             view.moveElement(e);
 
     }
 
+    /**
+     * Sets the current chosen color.
+     * @param col
+     */
+    @Override
+    public void setCurrentColor(Color col) {
+        currColor = col;
+    }
+
+    /**
+     * Sets all selected elements to current color.
+     * Takes string "fill" or "stroke" as argument for filltype
+     * @param type
+     */
     @Override
     public void setElementColor(String type) {
         if(selected){
-            view.setElementColor(type);
+            view.setElementColor(type,currColor);
         }
     }
 
-    @Override
-    public void addElement() {
-        // w8
-    }
-
+    /**
+     * Adds a connector between selected elements.
+     */
     @Override
     public void addConnector() {
         if(selected) {
@@ -180,14 +225,23 @@ public class App extends Application implements iControll {
         }
     }
 
+    /**
+     * Removes all selected elements
+     */
     @Override
     public void removeElement() {
         for (Symbols currElement: elementsSelected){
             view.removeElement((iObjects) currElement);
         }
+        for (Connectors currConn: connectorsSelected){
+            view.removeElement((iObjects) currConn);;
+        }
         clearAll();
     }
 
+    /**
+     * Clears workspace from elements and all selections.
+     */
     @Override
     public void removeAll() {
         clearAll();
